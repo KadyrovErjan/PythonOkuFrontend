@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import api from './api/axios'
+import LoadingSplash from './components/LoadingSplash'
 
 import PublicHome from './pages/PublicHome'
 
@@ -76,6 +77,15 @@ function RoleGate({ allowedRole }) {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setShowSplash(false), 950)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  if (showSplash) return <LoadingSplash />
+
   return (
     <BrowserRouter>
       <Routes>

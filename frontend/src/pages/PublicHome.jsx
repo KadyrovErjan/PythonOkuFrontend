@@ -61,6 +61,10 @@ export default function PublicHome() {
                 <Icon name="arrow" size={18} />
               </Link>
               <a href="#program" className="public-secondary">Посмотреть курс</a>
+              <a href="/logo.svg" download="pythonoku-logo.svg" className="public-secondary public-download">
+                <Icon name="download" size={17} />
+                <span>Скачать логотип</span>
+              </a>
             </div>
 
             <dl className="public-stats">
@@ -80,7 +84,7 @@ export default function PublicHome() {
                 <span /><span /><span />
                 <span className="code-file">lesson.py</span>
               </div>
-              <pre><span className="code-keyword">for</span> step <span className="code-keyword">in</span> <span className="code-string">"PythonOku"</span>:{`\n`}    practice(step){`\n`}    progress += 1</pre>
+              <pre><span className="code-keyword">for</span> step <span className="code-keyword">in</span> <span className="code-string">&quot;PythonOku&quot;</span>:{`\n`}    practice(step){`\n`}    progress += 1</pre>
             </div>
           </div>
         </section>

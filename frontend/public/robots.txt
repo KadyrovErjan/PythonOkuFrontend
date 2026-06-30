@@ -5,4 +5,4 @@ Disallow: /student/
 Disallow: /teacher/
 Disallow: /forgot-password
 
-Sitemap: https://pythonoku.edu.kg/sitemap.xml
+Sitemap: https://www.pythonoku.edu.kg/sitemap.xml

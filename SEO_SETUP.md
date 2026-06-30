@@ -27,7 +27,7 @@ pythonoku.edu.kg      -> Vercel apex record
 www.pythonoku.edu.kg  -> Vercel CNAME record
 ```
 
-Do not point `pythonoku.edu.kg` to the AWS backend. If `https://pythonoku.edu.kg/` shows `PythonOku API is running`, DNS is still going to AWS and Google will not index the frontend site.
+Do not point `pythonoku.edu.kg` to the AWS backend. If `https://www.pythonoku.edu.kg/` shows `PythonOku API is running`, DNS is still going to AWS and Google will not index the frontend site.
 
 ## 3. Vercel environment variable
 
@@ -41,7 +41,7 @@ Redeploy after changing it.
 
 ## 4. Google Search Console
 
-After `https://pythonoku.edu.kg/` opens the Vercel frontend:
+After `https://www.pythonoku.edu.kg/` opens the Vercel frontend:
 
 1. Open Google Search Console.
 2. Add a Domain property for `pythonoku.edu.kg`.
@@ -49,9 +49,9 @@ After `https://pythonoku.edu.kg/` opens the Vercel frontend:
 4. Submit this sitemap:
 
 ```text
-https://pythonoku.edu.kg/sitemap.xml
+https://www.pythonoku.edu.kg/sitemap.xml
 ```
 
-5. Use URL Inspection for `https://pythonoku.edu.kg/` and request indexing.
+5. Use URL Inspection for `https://www.pythonoku.edu.kg/` and request indexing.
 
 Indexing can take from several hours to several days. A sitemap helps discovery, but it does not guarantee immediate indexing or ranking.

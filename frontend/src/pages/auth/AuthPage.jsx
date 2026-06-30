@@ -51,7 +51,7 @@ export default function AuthPage() {
 
       localStorage.setItem('access', response.data.access)
       localStorage.setItem('refresh', response.data.refresh)
-      navigate('/')
+      navigate('/app')
     } catch (err) {
       setError(formatError(err.response?.data))
     } finally {

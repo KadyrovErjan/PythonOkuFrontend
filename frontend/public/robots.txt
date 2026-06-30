@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /app
+Disallow: /student/
+Disallow: /teacher/
+Disallow: /forgot-password
 
 Sitemap: https://pythonoku.edu.kg/sitemap.xml

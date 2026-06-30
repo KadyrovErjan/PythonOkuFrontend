@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#070b14" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta
       name="description"
       content="PythonOku — онлайн-платформа для изучения Python: короткие уроки, практика, тесты, домашние задания и понятный прогресс для учеников."
@@ -14,6 +14,7 @@
     <link rel="canonical" href="https://pythonoku.edu.kg/" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_KG" />
     <meta property="og:url" content="https://pythonoku.edu.kg/" />
     <meta property="og:title" content="PythonOku — учитесь программировать на Python" />
     <meta
@@ -21,6 +22,9 @@
       content="Короткие уроки, практика и понятный прогресс — всё, что нужно, чтобы начать путь в Python."
     />
     <meta property="og:site_name" content="PythonOku" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="PythonOku — онлайн-курс Python" />
+    <meta name="twitter:description" content="Изучайте Python с короткими уроками, практикой и понятным прогрессом." />
 
     <title>PythonOku — онлайн-курс Python программирования</title>
     <script type="application/ld+json">
@@ -29,11 +33,19 @@
         "@type": "EducationalOrganization",
         "name": "PythonOku",
         "url": "https://pythonoku.edu.kg/",
-        "description": "Онлайн-платформа для изучения Python с уроками, практикой, тестами и домашними заданиями."
+        "description": "Онлайн-платформа для изучения Python с уроками, практикой, тестами и домашними заданиями.",
+        "areaServed": "KG",
+        "knowsAbout": ["Python", "программирование", "онлайн обучение", "Python для начинающих"]
       }
     </script>
   </head>
   <body>
+    <noscript>
+      <main>
+        <h1>PythonOku — онлайн-курс Python для начинающих</h1>
+        <p>PythonOku помогает изучать Python с нуля: короткие уроки, практика, тесты, домашние задания и понятный прогресс для учеников.</p>
+      </main>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

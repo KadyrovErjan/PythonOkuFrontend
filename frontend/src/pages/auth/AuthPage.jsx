@@ -26,10 +26,29 @@ export default function AuthPage() {
     setError('')
   }
 
+  const collectErrorMessages = (value) => {
+    if (!value) return []
+    if (typeof value === 'string') return [value]
+    if (typeof value === 'number' || typeof value === 'boolean') return [String(value)]
+    if (Array.isArray(value)) return value.flatMap(collectErrorMessages)
+
+    if (typeof value === 'object') {
+      return Object.entries(value).flatMap(([key, nestedValue]) => {
+        const messages = collectErrorMessages(nestedValue)
+        if (!messages.length) return []
+        if (['detail', 'message', 'error', 'non_field_errors'].includes(key)) return messages
+        return messages.map((message) => `${key}: ${message}`)
+      })
+    }
+
+    return []
+  }
+
   const formatError = (data) => {
-    if (!data) return 'Не удалось связаться с сервером. Попробуйте ещё раз.'
-    if (typeof data === 'string') return data
-    return Object.values(data).flat().map(String).join(' ')
+    const messages = collectErrorMessages(data)
+    return messages.length
+      ? messages.join(' ')
+      : 'Не удалось связаться с сервером. Попробуйте ещё раз.'
   }
 
   const handleSubmit = async (event) => {
@@ -53,7 +72,7 @@ export default function AuthPage() {
       localStorage.setItem('refresh', response.data.refresh)
       navigate('/app')
     } catch (err) {
-      setError(formatError(err.response?.data))
+      setError(err.response ? formatError(err.response.data) : 'Не удалось подключиться к API. Проверьте api.pythonoku.edu.kg и настройки CORS.')
     } finally {
       setLoading(false)
     }

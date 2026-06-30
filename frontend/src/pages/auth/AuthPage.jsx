@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
 import Icon from '../../components/Icon'
+import BrandLogo from '../../components/BrandLogo'
 
 export default function AuthPage() {
   const navigate = useNavigate()
@@ -82,7 +83,7 @@ export default function AuthPage() {
     <div className="auth-shell">
       <section className="auth-story" aria-label="О платформе PythonOku">
         <div className="brand auth-brand">
-          <div className="brand-mark">Py</div>
+          <BrandLogo />
           <div className="brand-copy">
             <div className="brand-name">Python<span>Oku</span></div>
             <div className="brand-caption">платформа для роста</div>

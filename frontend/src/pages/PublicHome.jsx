@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import heroImage from '../assets/hero.png'
 import Icon from '../components/Icon'
+import BrandLogo from '../components/BrandLogo'
 
 const highlights = [
   { value: '20+', label: 'коротких уроков' },
@@ -31,7 +32,7 @@ export default function PublicHome() {
     <div className="public-shell">
       <header className="public-header">
         <Link to="/" className="brand public-brand" aria-label="PythonOku">
-          <div className="brand-mark">Py</div>
+          <BrandLogo />
           <div className="brand-copy">
             <div className="brand-name">Python<span>Oku</span></div>
             <div className="brand-caption">онлайн-курс Python</div>

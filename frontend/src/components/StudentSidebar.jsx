@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import Icon from './Icon'
+import BrandLogo from './BrandLogo'
 
 const links = [
   { to: '/student/dashboard', icon: 'home', label: 'Главная' },
@@ -13,7 +14,7 @@ const links = [
 function Brand() {
   return (
     <div className="brand">
-      <div className="brand-mark">Py</div>
+      <BrandLogo />
       <div className="brand-copy">
         <div className="brand-name">Python<span>Oku</span></div>
         <div className="brand-caption">учись в своём ритме</div>

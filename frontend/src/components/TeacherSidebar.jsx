@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import Icon from './Icon'
+import BrandLogo from './BrandLogo'
 
 const links = [
   { to: '/teacher/dashboard', icon: 'chart', label: 'Аналитика' },
@@ -29,7 +30,7 @@ export default function TeacherSidebar({ notifCount = 0 }) {
   return (
     <aside className="app-sidebar teacher" aria-label="Навигация преподавателя">
       <div className="brand">
-        <div className="brand-mark">Py</div>
+        <BrandLogo />
         <div className="brand-copy">
           <div className="brand-name">Python<span>Oku</span></div>
           <div className="brand-caption">панель преподавателя</div>

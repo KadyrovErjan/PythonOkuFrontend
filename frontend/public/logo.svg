@@ -1,19 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-  <title id="title">PythonOku</title>
-  <desc id="desc">PythonOku gradient PO logo.</desc>
+  <title id="title">PythonOku logo</title>
+  <desc id="desc">Gradient PO monogram for PythonOku.</desc>
   <defs>
-    <linearGradient id="bgGradient" x1="0" x2="512" y1="0" y2="512" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#171a39"/>
-      <stop offset="1" stop-color="#070b14"/>
-    </linearGradient>
     <linearGradient id="poGradient" x1="76" x2="455" y1="422" y2="98" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#8064ff"/>
       <stop offset="0.45" stop-color="#5fb6ff"/>
       <stop offset="1" stop-color="#22c7b8"/>
     </linearGradient>
+    <filter id="softShadow" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#070b14" flood-opacity="0.28"/>
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#bgGradient)"/>
-  <g fill="url(#poGradient)">
+  <g fill="url(#poGradient)" filter="url(#softShadow)">
     <path d="M84 84h174c83 0 145 49 165 118h-72c-17-34-51-53-94-53H155v109h78v65h-78v105H84V84Z"/>
     <path fill-rule="evenodd" d="M278 184h98c62 0 112 50 112 112v22c0 62-50 112-112 112h-98c-62 0-112-50-112-112v-22c0-62 50-112 112-112Zm7 66c-28 0-51 23-51 51v12c0 28 23 51 51 51h84c28 0 51-23 51-51v-12c0-28-23-51-51-51h-35v35c0 45-36 82-81 82h-27v-65h25c12 0 22-10 22-22v-30h12Z"/>
   </g>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
 import Icon from '../../components/Icon'
+import BrandLogo from '../../components/BrandLogo'
 
 const extractError = (error) => {
   const data = error.response?.data
@@ -74,7 +75,7 @@ export default function ForgotPasswordPage() {
     <div className="auth-shell reset-shell">
       <section className="auth-story reset-story" aria-label="Восстановление доступа">
         <div className="brand auth-brand">
-          <div className="brand-mark">Py</div>
+          <BrandLogo />
           <div className="brand-copy">
             <div className="brand-name">Python<span>Oku</span></div>
             <div className="brand-caption">безопасный доступ</div>

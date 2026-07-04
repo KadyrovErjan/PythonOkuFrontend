@@ -76,6 +76,18 @@ function filledVideoUrls(value, fallback = '') {
   return normaliseVideoUrls(value, fallback).filter(Boolean)
 }
 
+function editableVideoUrls(value, fallback = '') {
+  const source = Array.isArray(value) ? value.map(item => String(item ?? '')) : []
+  const legacyUrl = String(fallback ?? '').trim()
+
+  if (!source.length) return legacyUrl ? [legacyUrl] : ['']
+
+  const hasLegacy = source.some(item => item.trim() === legacyUrl)
+  if (legacyUrl && !hasLegacy) source.unshift(legacyUrl)
+
+  return source.length ? source : ['']
+}
+
 function toLessonDraft(lesson, courseId = '') {
   const videoUrls = normaliseVideoUrls(lesson?.video_urls, lesson?.youtube_url)
 
@@ -445,7 +457,7 @@ export default function TeacherCourses() {
 
   function updateLessonVideo(index, value) {
     setLessonDraft(previous => {
-      const nextVideos = normaliseVideoUrls(previous.video_urls, previous.youtube_url)
+      const nextVideos = editableVideoUrls(previous.video_urls, previous.youtube_url)
       nextVideos[index] = value
       return { ...previous, video_urls: nextVideos, youtube_url: nextVideos[0] ?? '' }
     })
@@ -454,13 +466,13 @@ export default function TeacherCourses() {
   function addLessonVideo() {
     setLessonDraft(previous => ({
       ...previous,
-      video_urls: [...normaliseVideoUrls(previous.video_urls, previous.youtube_url), ''],
+      video_urls: [...editableVideoUrls(previous.video_urls, previous.youtube_url), ''],
     }))
   }
 
   function removeLessonVideo(index) {
     setLessonDraft(previous => {
-      const nextVideos = normaliseVideoUrls(previous.video_urls, previous.youtube_url)
+      const nextVideos = editableVideoUrls(previous.video_urls, previous.youtube_url)
       nextVideos.splice(index, 1)
       const safeVideos = nextVideos.length ? nextVideos : ['']
       return { ...previous, video_urls: safeVideos, youtube_url: safeVideos[0] ?? '' }
@@ -469,7 +481,7 @@ export default function TeacherCourses() {
 
   function moveLessonVideo(index, direction) {
     setLessonDraft(previous => {
-      const nextVideos = normaliseVideoUrls(previous.video_urls, previous.youtube_url)
+      const nextVideos = editableVideoUrls(previous.video_urls, previous.youtube_url)
       const nextIndex = index + direction
       if (nextIndex < 0 || nextIndex >= nextVideos.length) return previous
       const [item] = nextVideos.splice(index, 1)
@@ -866,7 +878,7 @@ export default function TeacherCourses() {
                           <button type="button" onClick={addLessonVideo} className="manager-button ghost">+ Видео</button>
                         </div>
                         <div className="manager-video-list">
-                          {normaliseVideoUrls(lessonDraft.video_urls, lessonDraft.youtube_url).map((url, index, list) => (
+                          {editableVideoUrls(lessonDraft.video_urls, lessonDraft.youtube_url).map((url, index, list) => (
                             <div className="manager-video-row" key={`video-${index}`}>
                               <span>{index + 1}</span>
                               <input type="url" value={url} onChange={event => updateLessonVideo(index, event.target.value)} placeholder="https://youtube.com/watch?v=..." />

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import StudentSidebar from '../../components/StudentSidebar'
 import LessonHomeworkTrainer from '../../components/LessonHomeworkTrainer'
@@ -16,6 +16,29 @@ function getYouTubeId(url) {
   if (!url) return null
   const match = url.match(/(?:v=|youtu\.be\/|embed\/)([^&?/]+)/)
   return match ? match[1] : null
+}
+
+function normaliseVideoUrls(lesson) {
+  const source = Array.isArray(lesson?.video_urls) ? lesson.video_urls : []
+  const urls = source
+    .map(item => String(item ?? '').trim())
+    .filter(Boolean)
+
+  const legacyUrl = String(lesson?.youtube_url ?? '').trim()
+  if (legacyUrl && !urls.includes(legacyUrl)) urls.unshift(legacyUrl)
+
+  return urls
+}
+
+function normaliseVideoPartsProgress(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
+  return Object.fromEntries(Object.entries(value).filter(([, part]) => part && typeof part === 'object'))
+}
+
+function firstOpenVideoIndex(videoUrls, partsProgress, lessonCompleted) {
+  if (!videoUrls.length || lessonCompleted) return 0
+  const index = videoUrls.findIndex((_, itemIndex) => !partsProgress[String(itemIndex)]?.completed)
+  return index === -1 ? 0 : index
 }
 
 function loadYouTubeApi() {
@@ -106,6 +129,17 @@ export default function StudentLesson() {
   const [aiLoading, setAiLoading] = useState(false)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('lesson')
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0)
+  const [videoPartsProgress, setVideoPartsProgress] = useState({})
+  const videoUrls = useMemo(() => normaliseVideoUrls(lesson), [lesson])
+  const activeVideoUrl = videoUrls[activeVideoIndex] || ''
+  const completedVideoIndexes = useMemo(() => new Set(
+    Object.entries(videoPartsProgress)
+      .filter(([, part]) => part?.completed)
+      .map(([key]) => Number(key)),
+  ), [videoPartsProgress])
+  const currentPartCompleted = completed || completedVideoIndexes.has(activeVideoIndex)
+  const hasNextVideo = activeVideoIndex + 1 < videoUrls.length
   const [watchInfo, setWatchInfo] = useState({
     watchedSeconds: 0,
     durationSeconds: 0,
@@ -114,6 +148,7 @@ export default function StudentLesson() {
     playerReady: false,
     playing: false,
     syncing: false,
+    partCompleted: false,
     message: 'Запусти видео — прогресс пойдёт только во время просмотра.',
     error: '',
   })
@@ -152,9 +187,46 @@ export default function StudentLesson() {
       playerReady: false,
       playing: false,
       syncing: false,
+      partCompleted: false,
       message: 'Запусти видео — прогресс пойдёт только во время просмотра.',
       error: '',
     })
+  }, [])
+
+  const applyVideoPartToWatch = useCallback((part = {}) => {
+    const duration = Math.max(0, Number(part.video_duration_seconds || 0))
+    const ranges = normaliseRanges(part.watched_ranges || [], duration)
+    const watchedSeconds = Number(part.watched_seconds ?? rangesDuration(ranges))
+    const requiredSeconds = duration ? Math.ceil(duration * WATCH_REQUIRED_RATIO) : 0
+    const percent = duration ? Math.min(100, Math.round((watchedSeconds / duration) * 100)) : 0
+    const partCompleted = Boolean(part.completed)
+
+    watchRef.current = {
+      ranges,
+      duration,
+      lastTime: null,
+      lastTickAt: null,
+      lastSyncAt: 0,
+      playing: false,
+      completed: partCompleted,
+      syncInFlight: false,
+    }
+
+    setWatchInfo(current => ({
+      ...current,
+      watchedSeconds,
+      durationSeconds: duration,
+      requiredSeconds,
+      percent,
+      playerReady: false,
+      playing: false,
+      syncing: false,
+      partCompleted,
+      message: partCompleted
+        ? 'Эта часть уже просмотрена. Можно перейти дальше.'
+        : 'Запусти видео — прогресс пойдёт только во время просмотра.',
+      error: '',
+    }))
   }, [])
 
   const updateWatchInfoFromRef = useCallback((patch = {}) => {
@@ -193,6 +265,7 @@ export default function StudentLesson() {
         video_duration_seconds: duration,
         current_time: currentTime,
         ended,
+        video_index: activeVideoIndex,
       })
       const data = response.data
       const serverDuration = Number(data.video_duration_seconds || duration)
@@ -204,9 +277,17 @@ export default function StudentLesson() {
       watchRef.current.ranges = serverRanges
       watchRef.current.lastSyncAt = Date.now()
 
+      const serverPartsProgress = normaliseVideoPartsProgress(data.video_parts_progress)
+      if (Object.keys(serverPartsProgress).length) {
+        setVideoPartsProgress(serverPartsProgress)
+      }
+
       const serverWatched = Number(data.watched_seconds ?? rangesDuration(serverRanges))
       const serverRequired = Number(data.required_seconds || Math.ceil(serverDuration * WATCH_REQUIRED_RATIO))
       const serverPercent = Number(data.watch_percent ?? (serverDuration ? Math.round((serverWatched / serverDuration) * 100) : 0))
+
+      const partCompleted = Boolean(data.part_completed || data.completed)
+      if (partCompleted) watchRef.current.completed = true
 
       setWatchInfo(current => ({
         ...current,
@@ -215,9 +296,12 @@ export default function StudentLesson() {
         requiredSeconds: serverRequired,
         percent: Math.min(100, serverPercent),
         syncing: false,
+        partCompleted,
         message: data.completed
           ? 'Урок засчитан. Отличный просмотр!'
-          : current.message || 'Прогресс просмотра сохранён.',
+          : partCompleted && data.next_video_index !== null && data.next_video_index !== undefined
+            ? 'Эта часть готова. Переходи к следующему видео.'
+            : data.message || current.message || 'Прогресс просмотра сохранён.',
         error: '',
       }))
 
@@ -242,7 +326,7 @@ export default function StudentLesson() {
     } finally {
       watchRef.current.syncInFlight = false
     }
-  }, [id])
+  }, [activeVideoIndex, id])
 
   useEffect(() => {
     const load = async () => {
@@ -261,12 +345,20 @@ export default function StudentLesson() {
 
         const lessonData = lessonResponse.data
         const progress = progressResponse.data.find(item => item.lesson === Number(id))
-        const duration = Number(progress?.video_duration_seconds || (lessonData.duration_minutes || 0) * 60 || 0)
-        const ranges = normaliseRanges(progress?.watched_ranges || [], duration)
+        const loadedVideoUrls = normaliseVideoUrls(lessonData)
+        const partsProgress = normaliseVideoPartsProgress(progress?.video_parts_progress)
 
-        watchRef.current.duration = duration
-        watchRef.current.ranges = ranges
-        watchRef.current.completed = Boolean(progress?.completed)
+        if (!Object.keys(partsProgress).length && progress) {
+          const duration = Number(progress.video_duration_seconds || (lessonData.duration_minutes || 0) * 60 || 0)
+          partsProgress['0'] = {
+            watched_ranges: progress.watched_ranges || [],
+            watched_seconds: Number(progress.watched_seconds || 0),
+            video_duration_seconds: duration,
+            completed: Boolean(progress.completed),
+          }
+        }
+
+        const initialVideoIndex = firstOpenVideoIndex(loadedVideoUrls, partsProgress, Boolean(progress?.completed))
         lessonDurationFallbackRef.current = (lessonData.duration_minutes || 0) * 60
 
         setLesson(lessonData)
@@ -275,25 +367,16 @@ export default function StudentLesson() {
         setLessonTasks(taskResponse.data || [])
         setMessages(chatResponse.data)
         setCompleted(Boolean(progress?.completed))
-
-        const watchedSeconds = Number(progress?.watched_seconds ?? rangesDuration(ranges))
-        setWatchInfo(current => ({
-          ...current,
-          watchedSeconds,
-          durationSeconds: duration,
-          requiredSeconds: duration ? Math.ceil(duration * WATCH_REQUIRED_RATIO) : 0,
-          percent: duration ? Math.min(100, Math.round((watchedSeconds / duration) * 100)) : 0,
-          message: progress?.completed
-            ? 'Урок уже засчитан.'
-            : 'Запусти видео — прогресс пойдёт только во время просмотра.',
-        }))
+        setVideoPartsProgress(partsProgress)
+        setActiveVideoIndex(initialVideoIndex)
+        applyVideoPartToWatch(partsProgress[String(initialVideoIndex)] || {})
       } finally {
         setLoading(false)
       }
     }
 
     load()
-  }, [id, resetWatch])
+  }, [applyVideoPartToWatch, id, resetWatch])
 
   useEffect(() => {
     lessonDurationFallbackRef.current = (lesson?.duration_minutes || 0) * 60
@@ -350,7 +433,18 @@ export default function StudentLesson() {
     }
   }
 
-  const ytId = getYouTubeId(lesson?.youtube_url)
+  function canOpenVideoPart(index) {
+    return completed || index === 0 || Boolean(videoPartsProgress[String(index - 1)]?.completed)
+  }
+
+  function selectVideoPart(index) {
+    if (index < 0 || index >= videoUrls.length || !canOpenVideoPart(index)) return
+    syncWatchProgress({ force: true })
+    setActiveVideoIndex(index)
+    applyVideoPartToWatch(videoPartsProgress[String(index)] || {})
+  }
+
+  const ytId = getYouTubeId(activeVideoUrl)
 
   useEffect(() => {
     if (activeTab !== 'lesson' || !ytId || !playerHostRef.current) return undefined
@@ -372,7 +466,10 @@ export default function StudentLesson() {
           events: {
             onReady: event => {
               const duration = Math.ceil(Number(event.target.getDuration?.() || 0))
-              if (duration > 0) watchRef.current.duration = duration
+              if (duration > 0) {
+                watchRef.current.duration = duration
+                watchRef.current.ranges = normaliseRanges(watchRef.current.ranges, duration)
+              }
               updateWatchInfoFromRef({
                 playerReady: true,
                 message: completed
@@ -569,12 +666,13 @@ export default function StudentLesson() {
               <h1 className="text-xl font-bold text-white">{lesson?.title}</h1>
               <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 mt-1">
                 {lesson?.duration_minutes > 0 && <span>⏱ {lesson.duration_minutes} мин</span>}
+                {videoUrls.length > 1 && <span>🎞 {activeVideoIndex + 1}/{videoUrls.length}</span>}
                 <span className="text-yellow-400">+{lesson?.xp_reward} XP</span>
                 {completed && <span className="text-green-400">✅ Выполнено</span>}
               </div>
             </div>
             <div className={`lesson-auto-complete-pill ${completed ? 'done' : ''}`}>
-              {completed ? '✅ Урок засчитан' : '🎬 Завершится после просмотра'}
+              {completed ? '✅ Урок засчитан' : videoUrls.length > 1 ? `🎬 Часть ${activeVideoIndex + 1} из ${videoUrls.length}` : '🎬 Завершится после просмотра'}
             </div>
           </div>
         </div>
@@ -597,6 +695,33 @@ export default function StudentLesson() {
         <div className="flex-1 overflow-y-auto p-8">
           {activeTab === 'lesson' && (
             <div className="max-w-4xl">
+              {videoUrls.length > 1 && (
+                <div className="lesson-video-pager">
+                  <div className="lesson-video-pager-head">
+                    <span>Видео урока</span>
+                    <strong>{completedVideoIndexes.size} / {videoUrls.length} просмотрено</strong>
+                  </div>
+                  <div className="lesson-video-parts">
+                    {videoUrls.map((url, index) => {
+                      const isDone = completed || completedVideoIndexes.has(index)
+                      const isLocked = !canOpenVideoPart(index)
+                      return (
+                        <button
+                          key={`video-part-${index}-${url}`}
+                          type="button"
+                          disabled={isLocked}
+                          onClick={() => selectVideoPart(index)}
+                          className={`${index === activeVideoIndex ? 'active' : ''} ${isDone ? 'done' : ''} ${isLocked ? 'locked' : ''}`}
+                        >
+                          <span>{index + 1}</span>
+                          <strong>{isDone ? 'Готово' : isLocked ? 'Закрыто' : index === activeVideoIndex ? 'Сейчас' : 'Открыть'}</strong>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
               {ytId ? (
                 <>
                   <div className="mb-4 rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl bg-black">
@@ -621,9 +746,18 @@ export default function StudentLesson() {
                       <i style={{ width: `${completed ? 100 : goalPercent}%` }} />
                     </div>
                     <div className="lesson-watch-note">
-                      <span>{watchInfo.playing ? '▶' : completed ? '✅' : '⏸'}</span>
+                      <span>{watchInfo.playing ? '▶' : completed || currentPartCompleted || watchInfo.partCompleted ? '✅' : '⏸'}</span>
                       <p>{watchInfo.error || watchInfo.message}</p>
                     </div>
+                    {videoUrls.length > 1 && (
+                      <div className="lesson-video-nav">
+                        <button type="button" onClick={() => selectVideoPart(activeVideoIndex - 1)} disabled={activeVideoIndex === 0}>← Предыдущее</button>
+                        <span>Часть {activeVideoIndex + 1} из {videoUrls.length}</span>
+                        <button type="button" onClick={() => selectVideoPart(activeVideoIndex + 1)} disabled={!hasNextVideo || !(currentPartCompleted || watchInfo.partCompleted || completed)}>
+                          {hasNextVideo ? 'Следующее видео →' : 'Все видео просмотрены'}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </>
               ) : (

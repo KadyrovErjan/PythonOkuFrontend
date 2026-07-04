@@ -11,6 +11,7 @@ const emptyLesson = (courseId = '') => ({
   title: '',
   description: '',
   youtube_url: '',
+  video_urls: [''],
   content: '',
   order: 0,
   xp_reward: 15,
@@ -59,13 +60,32 @@ function toCourseDraft(course) {
   }
 }
 
+function normaliseVideoUrls(value, fallback = '') {
+  const source = Array.isArray(value) ? value : []
+  const cleaned = source
+    .map(item => String(item ?? '').trim())
+    .filter(Boolean)
+
+  const legacyUrl = String(fallback ?? '').trim()
+  if (legacyUrl && !cleaned.includes(legacyUrl)) cleaned.unshift(legacyUrl)
+
+  return cleaned.length ? cleaned : ['']
+}
+
+function filledVideoUrls(value, fallback = '') {
+  return normaliseVideoUrls(value, fallback).filter(Boolean)
+}
+
 function toLessonDraft(lesson, courseId = '') {
+  const videoUrls = normaliseVideoUrls(lesson?.video_urls, lesson?.youtube_url)
+
   return {
     id: lesson?.id ?? null,
     course: String(lesson?.course ?? courseId ?? ''),
     title: lesson?.title ?? '',
     description: lesson?.description ?? '',
-    youtube_url: lesson?.youtube_url ?? '',
+    youtube_url: videoUrls[0] ?? '',
+    video_urls: videoUrls,
     content: lesson?.content ?? '',
     order: asNumber(lesson?.order),
     xp_reward: asNumber(lesson?.xp_reward, 15),
@@ -423,6 +443,41 @@ export default function TeacherCourses() {
     }
   }
 
+  function updateLessonVideo(index, value) {
+    setLessonDraft(previous => {
+      const nextVideos = normaliseVideoUrls(previous.video_urls, previous.youtube_url)
+      nextVideos[index] = value
+      return { ...previous, video_urls: nextVideos, youtube_url: nextVideos[0] ?? '' }
+    })
+  }
+
+  function addLessonVideo() {
+    setLessonDraft(previous => ({
+      ...previous,
+      video_urls: [...normaliseVideoUrls(previous.video_urls, previous.youtube_url), ''],
+    }))
+  }
+
+  function removeLessonVideo(index) {
+    setLessonDraft(previous => {
+      const nextVideos = normaliseVideoUrls(previous.video_urls, previous.youtube_url)
+      nextVideos.splice(index, 1)
+      const safeVideos = nextVideos.length ? nextVideos : ['']
+      return { ...previous, video_urls: safeVideos, youtube_url: safeVideos[0] ?? '' }
+    })
+  }
+
+  function moveLessonVideo(index, direction) {
+    setLessonDraft(previous => {
+      const nextVideos = normaliseVideoUrls(previous.video_urls, previous.youtube_url)
+      const nextIndex = index + direction
+      if (nextIndex < 0 || nextIndex >= nextVideos.length) return previous
+      const [item] = nextVideos.splice(index, 1)
+      nextVideos.splice(nextIndex, 0, item)
+      return { ...previous, video_urls: nextVideos, youtube_url: nextVideos[0] ?? '' }
+    })
+  }
+
   async function saveLesson(event) {
     event.preventDefault()
 
@@ -432,10 +487,13 @@ export default function TeacherCourses() {
       return
     }
 
+    const videoUrls = filledVideoUrls(lessonDraft.video_urls, lessonDraft.youtube_url)
+
     const payload = {
       title: lessonDraft.title,
       description: lessonDraft.description,
-      youtube_url: lessonDraft.youtube_url,
+      youtube_url: videoUrls[0] ?? '',
+      video_urls: videoUrls,
       content: lessonDraft.content,
       order: asNumber(lessonDraft.order),
       xp_reward: asNumber(lessonDraft.xp_reward, 15),
@@ -753,7 +811,7 @@ export default function TeacherCourses() {
                 {!selectedCourseId ? <div className="manager-list-note">Выберите курс</div> : loadingLesson ? <div className="manager-list-note">Открываю...</div> : lessons.length ? lessons.map(lesson => (
                   <button key={lesson.id} type="button" onClick={() => selectLesson(lesson.id)} className={`manager-list-item ${String(lesson.id) === String(selectedLessonId) ? 'active purple' : ''}`}>
                     <span className="manager-list-title">{lesson.title}</span>
-                    <span className="manager-list-meta">№{lesson.order} · {lesson.duration_minutes || 0} мин · +{lesson.xp_reward || 0} XP</span>
+                    <span className="manager-list-meta">№{lesson.order} · {lesson.duration_minutes || 0} мин · {filledVideoUrls(lesson.video_urls, lesson.youtube_url).length || 0} видео · +{lesson.xp_reward || 0} XP</span>
                     <StatusPill published={lesson.is_published} />
                   </button>
                 )) : <div className="manager-list-note">Уроков пока нет</div>}
@@ -802,7 +860,23 @@ export default function TeacherCourses() {
                   <>
                     <div className="manager-form-grid two">
                       <Field label="Название урока"><input required value={lessonDraft.title} onChange={event => setLessonDraft(previous => ({ ...previous, title: event.target.value }))} placeholder="1-сабак, 1-бөлүм" /></Field>
-                      <Field label="YouTube ссылка"><input type="url" value={lessonDraft.youtube_url} onChange={event => setLessonDraft(previous => ({ ...previous, youtube_url: event.target.value }))} placeholder="https://youtube.com/watch?v=..." /></Field>
+                      <div className="manager-video-editor wide">
+                        <div className="manager-video-head">
+                          <div><span>Видео урока</span><strong>{filledVideoUrls(lessonDraft.video_urls, lessonDraft.youtube_url).length || 0} частей</strong></div>
+                          <button type="button" onClick={addLessonVideo} className="manager-button ghost">+ Видео</button>
+                        </div>
+                        <div className="manager-video-list">
+                          {normaliseVideoUrls(lessonDraft.video_urls, lessonDraft.youtube_url).map((url, index, list) => (
+                            <div className="manager-video-row" key={`video-${index}`}>
+                              <span>{index + 1}</span>
+                              <input type="url" value={url} onChange={event => updateLessonVideo(index, event.target.value)} placeholder="https://youtube.com/watch?v=..." />
+                              <button type="button" onClick={() => moveLessonVideo(index, -1)} disabled={index === 0} className="manager-icon-button" title="Выше">↑</button>
+                              <button type="button" onClick={() => moveLessonVideo(index, 1)} disabled={index === list.length - 1} className="manager-icon-button" title="Ниже">↓</button>
+                              <button type="button" onClick={() => removeLessonVideo(index)} disabled={list.length === 1 && !url} className="manager-icon-button danger" title="Удалить">×</button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                       <Field label="Краткое описание" className="wide"><textarea rows={3} value={lessonDraft.description} onChange={event => setLessonDraft(previous => ({ ...previous, description: event.target.value }))} placeholder="Что ученик поймёт после урока?" /></Field>
                       <Field label="Материал урока" className="wide"><textarea rows={9} value={lessonDraft.content} onChange={event => setLessonDraft(previous => ({ ...previous, content: event.target.value }))} placeholder="Текст урока, конспект, примеры кода..." /></Field>
                       <Field label="Порядок"><input type="number" min="0" value={lessonDraft.order} onChange={event => setLessonDraft(previous => ({ ...previous, order: event.target.value }))} /></Field>

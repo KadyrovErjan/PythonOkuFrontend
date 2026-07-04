@@ -37,7 +37,7 @@ const emptyTask = (lessonId = '') => ({
   title_kg: '',
   description_ru: '',
   description_kg: '',
-  starter_code: '# РќР°РїРёС€Рё СЂРµС€РµРЅРёРµ Р·РґРµСЃСЊ\n',
+  starter_code: '# Напиши решение здесьn',
   sample_input: '',
   sample_output: '',
   tests: [{ input: '', expected: '', hidden: false }],
@@ -105,7 +105,7 @@ function toTaskDraft(task, lessonId = '') {
     title_kg: task?.title_kg ?? '',
     description_ru: task?.description_ru ?? '',
     description_kg: task?.description_kg ?? '',
-    starter_code: task?.starter_code ?? '# РќР°РїРёС€Рё СЂРµС€РµРЅРёРµ Р·РґРµСЃСЊ\n',
+    starter_code: task?.starter_code ?? '# Напиши решение здесьn',
     sample_input: task?.sample_input ?? '',
     sample_output: task?.sample_output ?? '',
     tests: normaliseTests(task?.tests),
@@ -119,7 +119,7 @@ function StatusPill({ published }) {
   return (
     <span className={`manager-status ${published ? 'published' : 'draft'}`}>
       <span />
-      {published ? 'РћРїСѓР±Р»РёРєРѕРІР°РЅРѕ' : 'Р§РµСЂРЅРѕРІРёРє'}
+      {published ? 'Опубликовано' : 'Черновик'}
     </span>
   )
 }
@@ -193,17 +193,17 @@ export default function TeacherCourses() {
   }, [courses, courseQuery])
 
   const stats = [
-    { label: 'РљСѓСЂСЃРѕРІ', value: courses.length, caption: 'РІ РїСЂРѕРіСЂР°РјРјРµ' },
-    { label: 'РЈСЂРѕРєРѕРІ', value: lessons.length, caption: selectedCourse ? selectedCourse.title : 'РІС‹Р±РµСЂРёС‚Рµ РєСѓСЂСЃ' },
-    { label: 'РўРµСЃС‚РѕРІ', value: quizzes.length, caption: selectedLesson ? selectedLesson.title : 'РІС‹Р±РµСЂРёС‚Рµ СѓСЂРѕРє' },
-    { label: 'Р—Р°РґР°С‡', value: tasks.length, caption: 'Р°РІС‚РѕРїСЂРѕРІРµСЂРєР°' },
+    { label: 'Курсов', value: courses.length, caption: 'в программе' },
+    { label: 'Уроков', value: lessons.length, caption: selectedCourse ? selectedCourse.title : 'выберите курс' },
+    { label: 'Тестов', value: quizzes.length, caption: selectedLesson ? selectedLesson.title : 'выберите урок' },
+    { label: 'Задач', value: tasks.length, caption: 'автопроверка' },
   ]
 
   const tabs = [
-    { id: 'course', label: 'РљСѓСЂСЃ', count: selectedCourseId ? 1 : 0 },
-    { id: 'lesson', label: 'РЈСЂРѕРє', count: lessons.length },
-    { id: 'quiz', label: 'РўРµСЃС‚С‹', count: quizzes.length, disabled: !selectedLessonId },
-    { id: 'task', label: 'Р—Р°РґР°С‡Рё', count: tasks.length, disabled: !selectedLessonId },
+    { id: 'course', label: 'Курс', count: selectedCourseId ? 1 : 0 },
+    { id: 'lesson', label: 'Урок', count: lessons.length },
+    { id: 'quiz', label: 'Тесты', count: quizzes.length, disabled: !selectedLessonId },
+    { id: 'task', label: 'Задачи', count: tasks.length, disabled: !selectedLessonId },
   ]
 
   useEffect(() => {
@@ -245,7 +245,7 @@ export default function TeacherCourses() {
           resetLessonState(firstCourse.id)
         }
       } catch {
-        if (active) setMessage('РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РєСѓСЂСЃС‹. РџСЂРѕРІРµСЂСЊС‚Рµ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє API.')
+        if (active) setMessage('Не удалось загрузить курсы. Проверьте подключение к API.')
       } finally {
         if (active) setLoading(false)
       }
@@ -301,7 +301,7 @@ export default function TeacherCourses() {
       setQuizDraft(emptyQuiz(lessonId))
       setTaskDraft(emptyTask(lessonId))
     } catch {
-      setMessage('РќРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ СѓСЂРѕРє.')
+      setMessage('Не получилось открыть урок.')
     } finally {
       setLoadingLesson(false)
     }
@@ -335,7 +335,7 @@ export default function TeacherCourses() {
         resetLessonState(courseId)
       }
     } catch {
-      setMessage('РќРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ РєСѓСЂСЃ.')
+      setMessage('Не получилось открыть курс.')
     } finally {
       setLoadingLesson(false)
     }
@@ -357,19 +357,19 @@ export default function TeacherCourses() {
     resetLessonState('')
     setCourseDraft(emptyCourse)
     setLessons([])
-    if (showMessage) setMessage('РЎРѕР·РґР°Р№С‚Рµ РєСѓСЂСЃ, Р·Р°С‚РµРј РґРѕР±Р°РІСЊС‚Рµ Рє РЅРµРјСѓ СѓСЂРѕРєРё, С‚РµСЃС‚С‹ Рё Р·Р°РґР°С‡Рё.')
+    if (showMessage) setMessage('Создайте курс, затем добавьте к нему уроки, тесты и задачи.')
   }
 
   function newLesson() {
     if (!selectedCourseId) {
-      setMessage('РЎРЅР°С‡Р°Р»Р° РІС‹Р±РµСЂРёС‚Рµ РёР»Рё СЃРѕР·РґР°Р№С‚Рµ РєСѓСЂСЃ.')
+      setMessage('Сначала выберите или создайте курс.')
       setActivePanel('course')
       return
     }
 
     setActivePanel('lesson')
     resetLessonState(selectedCourseId)
-    setMessage('Р—Р°РїРѕР»РЅРёС‚Рµ РґР°РЅРЅС‹Рµ РЅРѕРІРѕРіРѕ СѓСЂРѕРєР°.')
+    setMessage('Заполните данные нового урока.')
   }
 
   async function saveCourse(event) {
@@ -384,16 +384,16 @@ export default function TeacherCourses() {
           String(course.id) === String(selectedCourseId) ? { ...course, ...response.data } : course
         )))
         setCourseDraft(toCourseDraft(response.data))
-        setMessage('РљСѓСЂСЃ СЃРѕС…СЂР°РЅС‘РЅ.')
+        setMessage('Курс сохранён.')
       } else {
         const response = await api.post('courses/', courseDraft)
         setCourses(previous => [...previous, response.data])
-        setMessage('РљСѓСЂСЃ СЃРѕР·РґР°РЅ. РўРµРїРµСЂСЊ РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ СѓСЂРѕРєРё.')
+        setMessage('Курс создан. Теперь можно добавить уроки.')
         await selectCourse(response.data.id, 'lesson')
       }
       await refreshNotifications()
     } catch {
-      setMessage('РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ РєСѓСЂСЃ. РџСЂРѕРІРµСЂСЊС‚Рµ РЅР°Р·РІР°РЅРёРµ Рё РѕРїРёСЃР°РЅРёРµ.')
+      setMessage('Не удалось сохранить курс. Проверьте название и описание.')
     } finally {
       setSaving('')
     }
@@ -401,7 +401,7 @@ export default function TeacherCourses() {
 
   async function deleteCourse() {
     if (!selectedCourseId) return
-    if (!confirm('РЈРґР°Р»РёС‚СЊ РєСѓСЂСЃ РІРјРµСЃС‚Рµ СЃ СѓСЂРѕРєР°РјРё, С‚РµСЃС‚Р°РјРё Рё Р·Р°РґР°С‡Р°РјРё?')) return
+    if (!confirm('Удалить курс вместе с уроками, тестами и задачами?')) return
 
     setSaving('course-delete')
     try {
@@ -415,9 +415,9 @@ export default function TeacherCourses() {
       } else {
         newCourse(false)
       }
-      setMessage('РљСѓСЂСЃ СѓРґР°Р»С‘РЅ.')
+      setMessage('Курс удалён.')
     } catch {
-      setMessage('РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ РєСѓСЂСЃ.')
+      setMessage('Не удалось удалить курс.')
     } finally {
       setSaving('')
     }
@@ -427,7 +427,7 @@ export default function TeacherCourses() {
     event.preventDefault()
 
     if (!selectedCourseId) {
-      setMessage('РЎРЅР°С‡Р°Р»Р° РІС‹Р±РµСЂРёС‚Рµ РєСѓСЂСЃ.')
+      setMessage('Сначала выберите курс.')
       setActivePanel('course')
       return
     }
@@ -452,7 +452,7 @@ export default function TeacherCourses() {
         setLessonDraft(toLessonDraft(response.data, selectedCourseId))
         const lessonsResponse = await api.get(`courses/${selectedCourseId}/lessons/`)
         setLessons(Array.isArray(lessonsResponse.data) ? lessonsResponse.data : [])
-        setMessage('РЈСЂРѕРє СЃРѕС…СЂР°РЅС‘РЅ.')
+        setMessage('Урок сохранён.')
       } else {
         const response = await api.post(`courses/${selectedCourseId}/lessons/`, payload)
         const lessonsResponse = await api.get(`courses/${selectedCourseId}/lessons/`)
@@ -460,10 +460,10 @@ export default function TeacherCourses() {
         await loadLessonData(response.data.id, selectedCourseId)
         await refreshCourses(selectedCourseId)
         setActivePanel('quiz')
-        setMessage('РЈСЂРѕРє СЃРѕР·РґР°РЅ. РўРµРїРµСЂСЊ РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ С‚РµСЃС‚С‹ РёР»Рё Р·Р°РґР°С‡Рё.')
+        setMessage('Урок создан. Теперь можно добавить тесты или задачи.')
       }
     } catch {
-      setMessage('РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ СѓСЂРѕРє. РџСЂРѕРІРµСЂСЊС‚Рµ СЃСЃС‹Р»РєСѓ YouTube Рё РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рµ РїРѕР»СЏ.')
+      setMessage('Не удалось сохранить урок. Проверьте ссылку YouTube и обязательные поля.')
     } finally {
       setSaving('')
     }
@@ -471,7 +471,7 @@ export default function TeacherCourses() {
 
   async function deleteLesson() {
     if (!selectedLessonId) return
-    if (!confirm('РЈРґР°Р»РёС‚СЊ СЌС‚РѕС‚ СѓСЂРѕРє РІРјРµСЃС‚Рµ СЃ С‚РµСЃС‚Р°РјРё Рё Р·Р°РґР°С‡Р°РјРё?')) return
+    if (!confirm('Удалить этот урок вместе с тестами и задачами?')) return
 
     setSaving('lesson-delete')
     try {
@@ -487,9 +487,9 @@ export default function TeacherCourses() {
         newLesson()
       }
       await refreshCourses(selectedCourseId)
-      setMessage('РЈСЂРѕРє СѓРґР°Р»С‘РЅ.')
+      setMessage('Урок удалён.')
     } catch {
-      setMessage('РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ СѓСЂРѕРє.')
+      setMessage('Не удалось удалить урок.')
     } finally {
       setSaving('')
     }
@@ -503,7 +503,7 @@ export default function TeacherCourses() {
     event.preventDefault()
 
     if (!selectedLessonId) {
-      setMessage('РЎРЅР°С‡Р°Р»Р° РІС‹Р±РµСЂРёС‚Рµ СѓСЂРѕРє.')
+      setMessage('Сначала выберите урок.')
       setActivePanel('lesson')
       return
     }
@@ -525,33 +525,33 @@ export default function TeacherCourses() {
     try {
       if (quizDraft.id) {
         await api.patch(`quizzes/${quizDraft.id}/`, payload)
-        setMessage('РўРµСЃС‚ РѕР±РЅРѕРІР»С‘РЅ.')
+        setMessage('Тест обновлён.')
       } else {
         await api.post(`lessons/${selectedLessonId}/quizzes/`, payload)
-        setMessage('РўРµСЃС‚ РґРѕР±Р°РІР»РµРЅ Рє СѓСЂРѕРєСѓ.')
+        setMessage('Тест добавлен к уроку.')
       }
 
       const response = await api.get(`lessons/${selectedLessonId}/quizzes/`)
       setQuizzes(Array.isArray(response.data) ? response.data : [])
       resetQuizForm()
     } catch {
-      setMessage('РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ С‚РµСЃС‚. Р—Р°РїРѕР»РЅРёС‚Рµ РІРѕРїСЂРѕСЃ Рё С‡РµС‚С‹СЂРµ РІР°СЂРёР°РЅС‚Р°.')
+      setMessage('Не удалось сохранить тест. Заполните вопрос и четыре варианта.')
     } finally {
       setSaving('')
     }
   }
 
   async function deleteQuiz(quizId) {
-    if (!confirm('РЈРґР°Р»РёС‚СЊ СЌС‚РѕС‚ С‚РµСЃС‚?')) return
+    if (!confirm('Удалить этот тест?')) return
 
     setSaving(`quiz-${quizId}`)
     try {
       await api.delete(`quizzes/${quizId}/`)
       setQuizzes(previous => previous.filter(quiz => quiz.id !== quizId))
       if (quizDraft.id === quizId) resetQuizForm()
-      setMessage('РўРµСЃС‚ СѓРґР°Р»С‘РЅ.')
+      setMessage('Тест удалён.')
     } catch {
-      setMessage('РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ С‚РµСЃС‚.')
+      setMessage('Не удалось удалить тест.')
     } finally {
       setSaving('')
     }
@@ -588,14 +588,14 @@ export default function TeacherCourses() {
     event.preventDefault()
 
     if (!selectedLessonId) {
-      setMessage('РЎРЅР°С‡Р°Р»Р° РІС‹Р±РµСЂРёС‚Рµ СѓСЂРѕРє.')
+      setMessage('Сначала выберите урок.')
       setActivePanel('lesson')
       return
     }
 
     const payload = taskPayload()
     if (!payload) {
-      setMessage('Р”РѕР±Р°РІСЊС‚Рµ С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ С‚РµСЃС‚ РїСЂРѕРІРµСЂРєРё: РІС…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ Рё РѕР¶РёРґР°РµРјС‹Р№ РІС‹РІРѕРґ.')
+      setMessage('Добавьте хотя бы один тест проверки: входные данные и ожидаемый вывод.')
       return
     }
 
@@ -605,33 +605,33 @@ export default function TeacherCourses() {
     try {
       if (taskDraft.id) {
         await api.patch(`homework/tasks/${taskDraft.id}/`, payload)
-        setMessage('Р—Р°РґР°С‡Р° РѕР±РЅРѕРІР»РµРЅР°.')
+        setMessage('Задача обновлена.')
       } else {
         await api.post('homework/tasks/', payload)
-        setMessage('Р—Р°РґР°С‡Р° РґРѕР±Р°РІР»РµРЅР° Рє СѓСЂРѕРєСѓ.')
+        setMessage('Задача добавлена к уроку.')
       }
 
       const response = await api.get(`homework/tasks/?lesson=${selectedLessonId}`)
       setTasks(Array.isArray(response.data) ? response.data : [])
       resetTaskForm()
     } catch {
-      setMessage('РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ Р·Р°РґР°С‡Сѓ. РџСЂРѕРІРµСЂСЊС‚Рµ РЅР°Р·РІР°РЅРёРµ, РѕРїРёСЃР°РЅРёРµ Рё С‚РµСЃС‚С‹.')
+      setMessage('Не удалось сохранить задачу. Проверьте название, описание и тесты.')
     } finally {
       setSaving('')
     }
   }
 
   async function deleteTask(taskId) {
-    if (!confirm('РЈРґР°Р»РёС‚СЊ СЌС‚Сѓ Р·Р°РґР°С‡Сѓ?')) return
+    if (!confirm('Удалить эту задачу?')) return
 
     setSaving(`task-${taskId}`)
     try {
       await api.delete(`homework/tasks/${taskId}/`)
       setTasks(previous => previous.filter(task => task.id !== taskId))
       if (taskDraft.id === taskId) resetTaskForm()
-      setMessage('Р—Р°РґР°С‡Р° СѓРґР°Р»РµРЅР°.')
+      setMessage('Задача удалена.')
     } catch {
-      setMessage('РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ Р·Р°РґР°С‡Сѓ.')
+      setMessage('Не удалось удалить задачу.')
     } finally {
       setSaving('')
     }
@@ -666,41 +666,53 @@ export default function TeacherCourses() {
       <main className="teacher-course-main">
         <header className="teacher-course-topbar">
           <div>
-            <span className="manager-kicker"><span /> РЈРїСЂР°РІР»РµРЅРёРµ РєСѓСЂСЃРѕРј</span>
-            <h1>РљСѓСЂСЃС‹ Рё СѓСЂРѕРєРё</h1>
-            <p>Р‘С‹СЃС‚СЂРѕ РІС‹Р±РµСЂРёС‚Рµ РєСѓСЂСЃ Рё СѓСЂРѕРє, Р·Р°С‚РµРј СЂРµРґР°РєС‚РёСЂСѓР№С‚Рµ РЅСѓР¶РЅС‹Р№ СЂР°Р·РґРµР» РІРѕ РІРєР»Р°РґРєР°С….</p>
+            <span className="manager-kicker"><span /> Редактор программы</span>
+            <h1>Управление курсом</h1>
+            <p>Выберите курс и урок. Все материалы, тесты и задачи редактируются в одном месте.</p>
           </div>
 
           <div className="manager-actions">
             <button type="button" onClick={() => selectCourse(selectedCourseId)} disabled={!selectedCourseId || loading} className="manager-button ghost">
               <Icon name="refresh" size={17} />
-              РћР±РЅРѕРІРёС‚СЊ
+              Обновить
             </button>
-            <button type="button" onClick={() => newCourse()} className="manager-button primary">+ РќРѕРІС‹Р№ РєСѓСЂСЃ</button>
+            <button type="button" onClick={() => newCourse()} className="manager-button primary">+ Новый курс</button>
           </div>
         </header>
 
-        <section className="manager-toolbar" aria-label="Р‘С‹СЃС‚СЂС‹Р№ РІС‹Р±РѕСЂ">
+        <section className="manager-toolbar" aria-label="Быстрый выбор">
           <label>
-            <span>РљСѓСЂСЃ</span>
+            <span>Курс</span>
             <select value={selectedCourseId} onChange={event => selectCourse(event.target.value)}>
-              <option value="">РќРѕРІС‹Р№ РєСѓСЂСЃ</option>
+              <option value="">Новый курс</option>
               {courses.map(course => <option key={course.id} value={course.id}>{course.title}</option>)}
             </select>
           </label>
           <label>
-            <span>РЈСЂРѕРє</span>
+            <span>Урок</span>
             <select value={selectedLessonId} onChange={event => selectLesson(event.target.value)} disabled={!selectedCourseId || !lessons.length}>
-              <option value="">РќРѕРІС‹Р№ СѓСЂРѕРє</option>
+              <option value="">Новый урок</option>
               {lessons.map(lesson => <option key={lesson.id} value={lesson.id}>{lesson.order}. {lesson.title}</option>)}
             </select>
           </label>
-          <button type="button" onClick={newLesson} disabled={!selectedCourseId} className="manager-button ghost">+ РЈСЂРѕРє</button>
+          <button type="button" onClick={newLesson} disabled={!selectedCourseId} className="manager-button ghost">+ Урок</button>
+        </section>
+
+        <section className="manager-context" aria-label="Текущий выбор">
+          <div><span>Курс</span><strong>{selectedCourse?.title || 'Новый курс'}</strong></div>
+          <i />
+          <div><span>Урок</span><strong>{selectedLesson?.title || (selectedCourseId ? 'Новый урок' : 'Сначала выберите курс')}</strong></div>
+          <div className="manager-context-actions">
+            <button type="button" onClick={() => setActivePanel('course')} className={activePanel === 'course' ? 'active' : ''}>Курс</button>
+            <button type="button" onClick={() => setActivePanel('lesson')} className={activePanel === 'lesson' ? 'active' : ''}>Урок</button>
+            <button type="button" onClick={() => setActivePanel('quiz')} disabled={!selectedLessonId} className={activePanel === 'quiz' ? 'active' : ''}>Тесты</button>
+            <button type="button" onClick={() => setActivePanel('task')} disabled={!selectedLessonId} className={activePanel === 'task' ? 'active' : ''}>Задачи</button>
+          </div>
         </section>
 
         {message && <div className="manager-message">{message}</div>}
 
-        <section className="manager-metrics" aria-label="РЎРІРѕРґРєР° РєСѓСЂСЃР°">
+        <section className="manager-metrics" aria-label="Сводка курса">
           {stats.map(item => (
             <article key={item.label}>
               <span>{item.label}</span>
@@ -714,43 +726,43 @@ export default function TeacherCourses() {
           <aside className="manager-rail">
             <section className="manager-rail-card">
               <div className="manager-rail-head">
-                <div><span>РџСЂРѕРіСЂР°РјРјР°</span><h2>РљСѓСЂСЃС‹</h2></div>
+                <div><span>Программа</span><h2>Курсы</h2></div>
                 <strong>{courses.length}</strong>
               </div>
               <label className="manager-search">
                 <Icon name="search" size={16} />
-                <input value={courseQuery} onChange={event => setCourseQuery(event.target.value)} placeholder="РќР°Р№С‚Рё РєСѓСЂСЃ" />
+                <input value={courseQuery} onChange={event => setCourseQuery(event.target.value)} placeholder="Найти курс" />
               </label>
               <div className="manager-list compact">
-                {loading ? <div className="manager-list-note">Р—Р°РіСЂСѓР·РєР°...</div> : filteredCourses.length ? filteredCourses.map(course => (
+                {loading ? <div className="manager-list-note">Загрузка...</div> : filteredCourses.length ? filteredCourses.map(course => (
                   <button key={course.id} type="button" onClick={() => selectCourse(course.id)} className={`manager-list-item ${String(course.id) === String(selectedCourseId) ? 'active' : ''}`}>
                     <span className="manager-list-title">{course.title}</span>
-                    <span className="manager-list-meta">{course.lessons_count ?? 0} СѓСЂРѕРєРѕРІ</span>
+                    <span className="manager-list-meta">{course.lessons_count ?? 0} уроков</span>
                     <StatusPill published={course.is_published} />
                   </button>
-                )) : <div className="manager-list-note">РљСѓСЂСЃРѕРІ РЅРµ РЅР°Р№РґРµРЅРѕ</div>}
+                )) : <div className="manager-list-note">Курсов не найдено</div>}
               </div>
             </section>
 
             <section className="manager-rail-card">
               <div className="manager-rail-head">
-                <div><span>РЎРѕРґРµСЂР¶Р°РЅРёРµ</span><h2>РЈСЂРѕРєРё</h2></div>
+                <div><span>Содержание</span><h2>Уроки</h2></div>
                 <strong>{lessons.length}</strong>
               </div>
               <div className="manager-list compact">
-                {!selectedCourseId ? <div className="manager-list-note">Р’С‹Р±РµСЂРёС‚Рµ РєСѓСЂСЃ</div> : loadingLesson ? <div className="manager-list-note">РћС‚РєСЂС‹РІР°СЋ...</div> : lessons.length ? lessons.map(lesson => (
+                {!selectedCourseId ? <div className="manager-list-note">Выберите курс</div> : loadingLesson ? <div className="manager-list-note">Открываю...</div> : lessons.length ? lessons.map(lesson => (
                   <button key={lesson.id} type="button" onClick={() => selectLesson(lesson.id)} className={`manager-list-item ${String(lesson.id) === String(selectedLessonId) ? 'active purple' : ''}`}>
                     <span className="manager-list-title">{lesson.title}</span>
-                    <span className="manager-list-meta">в„–{lesson.order} В· {lesson.duration_minutes || 0} РјРёРЅ В· +{lesson.xp_reward || 0} XP</span>
+                    <span className="manager-list-meta">№{lesson.order} · {lesson.duration_minutes || 0} мин · +{lesson.xp_reward || 0} XP</span>
                     <StatusPill published={lesson.is_published} />
                   </button>
-                )) : <div className="manager-list-note">РЈСЂРѕРєРѕРІ РїРѕРєР° РЅРµС‚</div>}
+                )) : <div className="manager-list-note">Уроков пока нет</div>}
               </div>
             </section>
           </aside>
 
           <section className="manager-editor">
-            <nav className="manager-tabs" aria-label="Р Р°Р·РґРµР» СЂРµРґР°РєС‚РѕСЂР°">
+            <nav className="manager-tabs" aria-label="Раздел редактора">
               {tabs.map(tab => (
                 <button key={tab.id} type="button" disabled={tab.disabled} onClick={() => setActivePanel(tab.id)} className={activePanel === tab.id ? 'active' : ''}>
                   <span>{tab.label}</span>
@@ -761,45 +773,45 @@ export default function TeacherCourses() {
 
             {activePanel === 'course' && (
               <form onSubmit={saveCourse} className="manager-panel manager-form">
-                <PanelTitle eyebrow="РљСѓСЂСЃ" title={selectedCourseId ? 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РєСѓСЂСЃР°' : 'РќРѕРІС‹Р№ РєСѓСЂСЃ'}>
+                <PanelTitle eyebrow="Курс" title={selectedCourseId ? 'Редактирование курса' : 'Новый курс'}>
                   {selectedCourseId && <StatusPill published={courseDraft.is_published} />}
-                  <button type="button" onClick={deleteCourse} disabled={!selectedCourseId || saving === 'course-delete'} className="manager-button danger">РЈРґР°Р»РёС‚СЊ</button>
+                  <button type="button" onClick={deleteCourse} disabled={!selectedCourseId || saving === 'course-delete'} className="manager-button danger">Удалить</button>
                 </PanelTitle>
 
                 <div className="manager-form-grid two">
-                  <Field label="РќР°Р·РІР°РЅРёРµ РєСѓСЂСЃР°" className="wide"><input required value={courseDraft.title} onChange={event => setCourseDraft(previous => ({ ...previous, title: event.target.value }))} placeholder="Python РїСЂРѕРіСЂР°РјРјР°Р»РѕРѕ РєСѓСЂСЃСѓ" /></Field>
-                  <Field label="РћРїРёСЃР°РЅРёРµ" className="wide"><textarea required rows={4} value={courseDraft.description} onChange={event => setCourseDraft(previous => ({ ...previous, description: event.target.value }))} placeholder="РљРѕСЂРѕС‚РєРѕ СЂР°СЃСЃРєР°Р¶РёС‚Рµ, С‡РµРјСѓ СѓС‡РµРЅРёРє РЅР°СѓС‡РёС‚СЃСЏ." /></Field>
+                  <Field label="Название курса" className="wide"><input required value={courseDraft.title} onChange={event => setCourseDraft(previous => ({ ...previous, title: event.target.value }))} placeholder="Python программалоо курсу" /></Field>
+                  <Field label="Описание" className="wide"><textarea required rows={4} value={courseDraft.description} onChange={event => setCourseDraft(previous => ({ ...previous, description: event.target.value }))} placeholder="Коротко расскажите, чему ученик научится." /></Field>
                 </div>
 
                 <div className="manager-form-footer">
-                  <label className="manager-check"><input type="checkbox" checked={courseDraft.is_published} onChange={event => setCourseDraft(previous => ({ ...previous, is_published: event.target.checked }))} /> РћРїСѓР±Р»РёРєРѕРІР°С‚СЊ РєСѓСЂСЃ</label>
-                  <button type="submit" disabled={saving === 'course'} className="manager-button primary">{saving === 'course' ? 'РЎРѕС…СЂР°РЅСЏСЋ...' : selectedCourseId ? 'РЎРѕС…СЂР°РЅРёС‚СЊ РєСѓСЂСЃ' : 'РЎРѕР·РґР°С‚СЊ РєСѓСЂСЃ'}</button>
+                  <label className="manager-check"><input type="checkbox" checked={courseDraft.is_published} onChange={event => setCourseDraft(previous => ({ ...previous, is_published: event.target.checked }))} /> Опубликовать курс</label>
+                  <button type="submit" disabled={saving === 'course'} className="manager-button primary">{saving === 'course' ? 'Сохраняю...' : selectedCourseId ? 'Сохранить курс' : 'Создать курс'}</button>
                 </div>
               </form>
             )}
 
             {activePanel === 'lesson' && (
               <form onSubmit={saveLesson} className="manager-panel manager-form">
-                <PanelTitle eyebrow="РЈСЂРѕРє" title={lessonDraft.id ? 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ СѓСЂРѕРєР°' : 'РќРѕРІС‹Р№ СѓСЂРѕРє'}>
+                <PanelTitle eyebrow="Урок" title={lessonDraft.id ? 'Редактирование урока' : 'Новый урок'}>
                   {lessonDraft.id && <StatusPill published={lessonDraft.is_published} />}
-                  <button type="button" onClick={newLesson} disabled={!selectedCourseId} className="manager-button ghost">РќРѕРІС‹Р№ СѓСЂРѕРє</button>
-                  <button type="button" onClick={deleteLesson} disabled={!selectedLessonId || saving === 'lesson-delete'} className="manager-button danger">РЈРґР°Р»РёС‚СЊ</button>
+                  <button type="button" onClick={newLesson} disabled={!selectedCourseId} className="manager-button ghost">Новый урок</button>
+                  <button type="button" onClick={deleteLesson} disabled={!selectedLessonId || saving === 'lesson-delete'} className="manager-button danger">Удалить</button>
                 </PanelTitle>
 
-                {!selectedCourseId ? <EmptyHint title="РљСѓСЂСЃ РЅРµ РІС‹Р±СЂР°РЅ" text="Р’С‹Р±РµСЂРёС‚Рµ РєСѓСЂСЃ СЃР»РµРІР° РёР»Рё СЃРѕР·РґР°Р№С‚Рµ РЅРѕРІС‹Р№ РєСѓСЂСЃ." /> : (
+                {!selectedCourseId ? <EmptyHint title="Курс не выбран" text="Выберите курс слева или создайте новый курс." /> : (
                   <>
                     <div className="manager-form-grid two">
-                      <Field label="РќР°Р·РІР°РЅРёРµ СѓСЂРѕРєР°"><input required value={lessonDraft.title} onChange={event => setLessonDraft(previous => ({ ...previous, title: event.target.value }))} placeholder="1-СЃР°Р±Р°Рє, 1-Р±У©Р»ТЇРј" /></Field>
-                      <Field label="YouTube СЃСЃС‹Р»РєР°"><input type="url" value={lessonDraft.youtube_url} onChange={event => setLessonDraft(previous => ({ ...previous, youtube_url: event.target.value }))} placeholder="https://youtube.com/watch?v=..." /></Field>
-                      <Field label="РљСЂР°С‚РєРѕРµ РѕРїРёСЃР°РЅРёРµ" className="wide"><textarea rows={3} value={lessonDraft.description} onChange={event => setLessonDraft(previous => ({ ...previous, description: event.target.value }))} placeholder="Р§С‚Рѕ СѓС‡РµРЅРёРє РїРѕР№РјС‘С‚ РїРѕСЃР»Рµ СѓСЂРѕРєР°?" /></Field>
-                      <Field label="РњР°С‚РµСЂРёР°Р» СѓСЂРѕРєР°" className="wide"><textarea rows={9} value={lessonDraft.content} onChange={event => setLessonDraft(previous => ({ ...previous, content: event.target.value }))} placeholder="РўРµРєСЃС‚ СѓСЂРѕРєР°, РєРѕРЅСЃРїРµРєС‚, РїСЂРёРјРµСЂС‹ РєРѕРґР°..." /></Field>
-                      <Field label="РџРѕСЂСЏРґРѕРє"><input type="number" min="0" value={lessonDraft.order} onChange={event => setLessonDraft(previous => ({ ...previous, order: event.target.value }))} /></Field>
+                      <Field label="Название урока"><input required value={lessonDraft.title} onChange={event => setLessonDraft(previous => ({ ...previous, title: event.target.value }))} placeholder="1-сабак, 1-бөлүм" /></Field>
+                      <Field label="YouTube ссылка"><input type="url" value={lessonDraft.youtube_url} onChange={event => setLessonDraft(previous => ({ ...previous, youtube_url: event.target.value }))} placeholder="https://youtube.com/watch?v=..." /></Field>
+                      <Field label="Краткое описание" className="wide"><textarea rows={3} value={lessonDraft.description} onChange={event => setLessonDraft(previous => ({ ...previous, description: event.target.value }))} placeholder="Что ученик поймёт после урока?" /></Field>
+                      <Field label="Материал урока" className="wide"><textarea rows={9} value={lessonDraft.content} onChange={event => setLessonDraft(previous => ({ ...previous, content: event.target.value }))} placeholder="Текст урока, конспект, примеры кода..." /></Field>
+                      <Field label="Порядок"><input type="number" min="0" value={lessonDraft.order} onChange={event => setLessonDraft(previous => ({ ...previous, order: event.target.value }))} /></Field>
                       <Field label="XP"><input type="number" min="0" value={lessonDraft.xp_reward} onChange={event => setLessonDraft(previous => ({ ...previous, xp_reward: event.target.value }))} /></Field>
-                      <Field label="РњРёРЅСѓС‚С‹"><input type="number" min="0" value={lessonDraft.duration_minutes} onChange={event => setLessonDraft(previous => ({ ...previous, duration_minutes: event.target.value }))} /></Field>
+                      <Field label="Минуты"><input type="number" min="0" value={lessonDraft.duration_minutes} onChange={event => setLessonDraft(previous => ({ ...previous, duration_minutes: event.target.value }))} /></Field>
                     </div>
                     <div className="manager-form-footer">
-                      <label className="manager-check"><input type="checkbox" checked={lessonDraft.is_published} onChange={event => setLessonDraft(previous => ({ ...previous, is_published: event.target.checked }))} /> РћРїСѓР±Р»РёРєРѕРІР°С‚СЊ СѓСЂРѕРє</label>
-                      <button type="submit" disabled={saving === 'lesson'} className="manager-button primary">{saving === 'lesson' ? 'РЎРѕС…СЂР°РЅСЏСЋ...' : lessonDraft.id ? 'РЎРѕС…СЂР°РЅРёС‚СЊ СѓСЂРѕРє' : 'РЎРѕР·РґР°С‚СЊ СѓСЂРѕРє'}</button>
+                      <label className="manager-check"><input type="checkbox" checked={lessonDraft.is_published} onChange={event => setLessonDraft(previous => ({ ...previous, is_published: event.target.checked }))} /> Опубликовать урок</label>
+                      <button type="submit" disabled={saving === 'lesson'} className="manager-button primary">{saving === 'lesson' ? 'Сохраняю...' : lessonDraft.id ? 'Сохранить урок' : 'Создать урок'}</button>
                     </div>
                   </>
                 )}
@@ -808,32 +820,32 @@ export default function TeacherCourses() {
 
             {activePanel === 'quiz' && (
               <div className="manager-panel">
-                <PanelTitle eyebrow="РўРµСЃС‚С‹" title="Р’РѕРїСЂРѕСЃС‹ СѓСЂРѕРєР°"><button type="button" onClick={resetQuizForm} disabled={!selectedLessonId} className="manager-button ghost">РќРѕРІС‹Р№ С‚РµСЃС‚</button></PanelTitle>
+                <PanelTitle eyebrow="Тесты" title="Вопросы урока"><button type="button" onClick={resetQuizForm} disabled={!selectedLessonId} className="manager-button ghost">Новый тест</button></PanelTitle>
 
-                {!selectedLessonId ? <EmptyHint title="РЈСЂРѕРє РЅРµ РІС‹Р±СЂР°РЅ" text="Р’С‹Р±РµСЂРёС‚Рµ СѓСЂРѕРє, С‡С‚РѕР±С‹ РґРѕР±Р°РІРёС‚СЊ С‚РµСЃС‚С‹." /> : (
+                {!selectedLessonId ? <EmptyHint title="Урок не выбран" text="Выберите урок, чтобы добавить тесты." /> : (
                   <div className="manager-split">
                     <div className="manager-list">
                       {quizzes.length ? quizzes.map((quiz, index) => (
                         <article key={quiz.id} className="manager-card-row">
-                          <div><span>Р’РѕРїСЂРѕСЃ {index + 1}</span><strong>{quiz.question}</strong><small>РћС‚РІРµС‚: {quiz.correct?.toUpperCase()} В· +{quiz.xp_reward} XP</small></div>
-                          <div><button type="button" onClick={() => setQuizDraft(toQuizDraft(quiz, selectedLessonId))} className="manager-button ghost">РР·РјРµРЅРёС‚СЊ</button><button type="button" onClick={() => deleteQuiz(quiz.id)} disabled={saving === `quiz-${quiz.id}`} className="manager-button danger">Г—</button></div>
+                          <div><span>Вопрос {index + 1}</span><strong>{quiz.question}</strong><small>Ответ: {quiz.correct?.toUpperCase()} · +{quiz.xp_reward} XP</small></div>
+                          <div><button type="button" onClick={() => setQuizDraft(toQuizDraft(quiz, selectedLessonId))} className="manager-button ghost">Изменить</button><button type="button" onClick={() => deleteQuiz(quiz.id)} disabled={saving === `quiz-${quiz.id}`} className="manager-button danger">×</button></div>
                         </article>
-                      )) : <EmptyHint title="РўРµСЃС‚РѕРІ РїРѕРєР° РЅРµС‚" text="Р”РѕР±Р°РІСЊС‚Рµ РїРµСЂРІС‹Р№ РІРѕРїСЂРѕСЃ РґР»СЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ СѓСЂРѕРєР°." />}
+                      )) : <EmptyHint title="Тестов пока нет" text="Добавьте первый вопрос для выбранного урока." />}
                     </div>
 
                     <form onSubmit={saveQuiz} className="manager-subform">
-                      <h3>{quizDraft.id ? 'РР·РјРµРЅРёС‚СЊ С‚РµСЃС‚' : 'РќРѕРІС‹Р№ С‚РµСЃС‚'}</h3>
-                      <Field label="Р’РѕРїСЂРѕСЃ"><textarea required rows={3} value={quizDraft.question} onChange={event => setQuizDraft(previous => ({ ...previous, question: event.target.value }))} placeholder="Р§С‚Рѕ РІС‹РІРµРґРµС‚ print(2 + 2)?" /></Field>
+                      <h3>{quizDraft.id ? 'Изменить тест' : 'Новый тест'}</h3>
+                      <Field label="Вопрос"><textarea required rows={3} value={quizDraft.question} onChange={event => setQuizDraft(previous => ({ ...previous, question: event.target.value }))} placeholder="Что выведет print(2 + 2)?" /></Field>
                       {['a', 'b', 'c', 'd'].map(option => (
-                        <Field key={option} label={`Р’Р°СЂРёР°РЅС‚ ${option.toUpperCase()}`}>
+                        <Field key={option} label={`Вариант ${option.toUpperCase()}`}>
                           <div className="answer-row">
                             <input required value={quizDraft[`option_${option}`]} onChange={event => setQuizDraft(previous => ({ ...previous, [`option_${option}`]: event.target.value }))} />
-                            <button type="button" onClick={() => setQuizDraft(previous => ({ ...previous, correct: option }))} className={`manager-button ${quizDraft.correct === option ? 'primary' : 'ghost'}`}>Р’РµСЂРЅС‹Р№</button>
+                            <button type="button" onClick={() => setQuizDraft(previous => ({ ...previous, correct: option }))} className={`manager-button ${quizDraft.correct === option ? 'primary' : 'ghost'}`}>Верный</button>
                           </div>
                         </Field>
                       ))}
                       <Field label="XP"><input type="number" min="0" value={quizDraft.xp_reward} onChange={event => setQuizDraft(previous => ({ ...previous, xp_reward: event.target.value }))} /></Field>
-                      <div className="manager-form-footer right"><button type="submit" disabled={saving === 'quiz'} className="manager-button primary">{saving === 'quiz' ? 'РЎРѕС…СЂР°РЅСЏСЋ...' : quizDraft.id ? 'РЎРѕС…СЂР°РЅРёС‚СЊ С‚РµСЃС‚' : 'Р”РѕР±Р°РІРёС‚СЊ С‚РµСЃС‚'}</button></div>
+                      <div className="manager-form-footer right"><button type="submit" disabled={saving === 'quiz'} className="manager-button primary">{saving === 'quiz' ? 'Сохраняю...' : quizDraft.id ? 'Сохранить тест' : 'Добавить тест'}</button></div>
                     </form>
                   </div>
                 )}
@@ -842,51 +854,51 @@ export default function TeacherCourses() {
 
             {activePanel === 'task' && (
               <div className="manager-panel">
-                <PanelTitle eyebrow="Р—Р°РґР°С‡Рё" title="РђРІС‚РѕРїСЂРѕРІРµСЂРєР° РєРѕРґР°"><button type="button" onClick={resetTaskForm} disabled={!selectedLessonId} className="manager-button ghost">РќРѕРІР°СЏ Р·Р°РґР°С‡Р°</button></PanelTitle>
+                <PanelTitle eyebrow="Задачи" title="Автопроверка кода"><button type="button" onClick={resetTaskForm} disabled={!selectedLessonId} className="manager-button ghost">Новая задача</button></PanelTitle>
 
-                {!selectedLessonId ? <EmptyHint title="РЈСЂРѕРє РЅРµ РІС‹Р±СЂР°РЅ" text="Р’С‹Р±РµСЂРёС‚Рµ СѓСЂРѕРє, С‡С‚РѕР±С‹ РґРѕР±Р°РІРёС‚СЊ Р·Р°РґР°С‡Рё." /> : (
+                {!selectedLessonId ? <EmptyHint title="Урок не выбран" text="Выберите урок, чтобы добавить задачи." /> : (
                   <div className="manager-split wide">
                     <div className="manager-list">
                       {tasks.length ? tasks.map((task, index) => (
                         <article key={task.id} className="manager-card-row">
-                          <div><span>Р—Р°РґР°С‡Р° {index + 1}</span><strong>{task.title_ru}</strong><small>{task.tests_count ?? task.tests?.length ?? 0} С‚РµСЃС‚Р° В· +{task.xp_reward} XP</small></div>
-                          <div><button type="button" onClick={() => setTaskDraft(toTaskDraft(task, selectedLessonId))} className="manager-button ghost">РР·РјРµРЅРёС‚СЊ</button><button type="button" onClick={() => deleteTask(task.id)} disabled={saving === `task-${task.id}`} className="manager-button danger">Г—</button></div>
+                          <div><span>Задача {index + 1}</span><strong>{task.title_ru}</strong><small>{task.tests_count ?? task.tests?.length ?? 0} теста · +{task.xp_reward} XP</small></div>
+                          <div><button type="button" onClick={() => setTaskDraft(toTaskDraft(task, selectedLessonId))} className="manager-button ghost">Изменить</button><button type="button" onClick={() => deleteTask(task.id)} disabled={saving === `task-${task.id}`} className="manager-button danger">×</button></div>
                         </article>
-                      )) : <EmptyHint title="Р—Р°РґР°С‡ РїРѕРєР° РЅРµС‚" text="Р”РѕР±Р°РІСЊС‚Рµ РїСЂР°РєС‚РёС‡РµСЃРєСѓСЋ Р·Р°РґР°С‡Сѓ СЃ С‚РµСЃС‚Р°РјРё РїСЂРѕРІРµСЂРєРё." />}
+                      )) : <EmptyHint title="Задач пока нет" text="Добавьте практическую задачу с тестами проверки." />}
                     </div>
 
                     <form onSubmit={saveTask} className="manager-subform">
-                      <h3>{taskDraft.id ? 'РР·РјРµРЅРёС‚СЊ Р·Р°РґР°С‡Сѓ' : 'РќРѕРІР°СЏ Р·Р°РґР°С‡Р°'}</h3>
+                      <h3>{taskDraft.id ? 'Изменить задачу' : 'Новая задача'}</h3>
                       <div className="manager-form-grid two">
-                        <Field label="РќР°Р·РІР°РЅРёРµ RU"><input required value={taskDraft.title_ru} onChange={event => setTaskDraft(previous => ({ ...previous, title_ru: event.target.value }))} placeholder="Р—РЅР°Рє С‡РёСЃР»Р°" /></Field>
-                        <Field label="РќР°Р·РІР°РЅРёРµ KG"><input value={taskDraft.title_kg} onChange={event => setTaskDraft(previous => ({ ...previous, title_kg: event.target.value }))} placeholder="РЎР°РЅРґС‹РЅ Р±РµР»РіРёСЃРё" /></Field>
-                        <Field label="РЈСЃР»РѕРІРёРµ RU" className="wide"><textarea required rows={4} value={taskDraft.description_ru} onChange={event => setTaskDraft(previous => ({ ...previous, description_ru: event.target.value }))} /></Field>
-                        <Field label="РЈСЃР»РѕРІРёРµ KG" className="wide"><textarea rows={4} value={taskDraft.description_kg} onChange={event => setTaskDraft(previous => ({ ...previous, description_kg: event.target.value }))} /></Field>
-                        <Field label="РЎС‚Р°СЂС‚РѕРІС‹Р№ РєРѕРґ" className="wide"><textarea rows={6} value={taskDraft.starter_code} onChange={event => setTaskDraft(previous => ({ ...previous, starter_code: event.target.value }))} /></Field>
-                        <Field label="РџСЂРёРјРµСЂ РІС…РѕРґР°"><textarea rows={3} value={taskDraft.sample_input} onChange={event => setTaskDraft(previous => ({ ...previous, sample_input: event.target.value }))} /></Field>
-                        <Field label="РџСЂРёРјРµСЂ РІС‹РІРѕРґР°"><textarea rows={3} value={taskDraft.sample_output} onChange={event => setTaskDraft(previous => ({ ...previous, sample_output: event.target.value }))} /></Field>
+                        <Field label="Название RU"><input required value={taskDraft.title_ru} onChange={event => setTaskDraft(previous => ({ ...previous, title_ru: event.target.value }))} placeholder="Знак числа" /></Field>
+                        <Field label="Название KG"><input value={taskDraft.title_kg} onChange={event => setTaskDraft(previous => ({ ...previous, title_kg: event.target.value }))} placeholder="Сандын белгиси" /></Field>
+                        <Field label="Условие RU" className="wide"><textarea required rows={4} value={taskDraft.description_ru} onChange={event => setTaskDraft(previous => ({ ...previous, description_ru: event.target.value }))} /></Field>
+                        <Field label="Условие KG" className="wide"><textarea rows={4} value={taskDraft.description_kg} onChange={event => setTaskDraft(previous => ({ ...previous, description_kg: event.target.value }))} /></Field>
+                        <Field label="Стартовый код" className="wide"><textarea rows={6} value={taskDraft.starter_code} onChange={event => setTaskDraft(previous => ({ ...previous, starter_code: event.target.value }))} /></Field>
+                        <Field label="Пример входа"><textarea rows={3} value={taskDraft.sample_input} onChange={event => setTaskDraft(previous => ({ ...previous, sample_input: event.target.value }))} /></Field>
+                        <Field label="Пример вывода"><textarea rows={3} value={taskDraft.sample_output} onChange={event => setTaskDraft(previous => ({ ...previous, sample_output: event.target.value }))} /></Field>
                       </div>
 
                       <section className="task-test-editor">
-                        <div className="task-test-editor-head"><h4>РўРµСЃС‚С‹ РїСЂРѕРІРµСЂРєРё</h4><button type="button" onClick={addTaskTest} className="manager-button ghost">+ РўРµСЃС‚</button></div>
+                        <div className="task-test-editor-head"><h4>Тесты проверки</h4><button type="button" onClick={addTaskTest} className="manager-button ghost">+ Тест</button></div>
                         {taskDraft.tests.map((test, index) => (
                           <div key={`${index}-${taskDraft.tests.length}`} className="manager-test-row">
                             <strong>#{index + 1}</strong>
-                            <Field label="Р’РІРѕРґ"><textarea rows={2} value={test.input} onChange={event => updateTaskTest(index, 'input', event.target.value)} /></Field>
-                            <Field label="РћР¶РёРґР°РµРјС‹Р№ РІС‹РІРѕРґ"><textarea rows={2} value={test.expected} onChange={event => updateTaskTest(index, 'expected', event.target.value)} /></Field>
-                            <label className="manager-check compact"><input type="checkbox" checked={test.hidden} onChange={event => updateTaskTest(index, 'hidden', event.target.checked)} /> РЎРєСЂС‹С‚С‹Р№</label>
-                            <button type="button" onClick={() => removeTaskTest(index)} className="manager-button danger">Г—</button>
+                            <Field label="Ввод"><textarea rows={2} value={test.input} onChange={event => updateTaskTest(index, 'input', event.target.value)} /></Field>
+                            <Field label="Ожидаемый вывод"><textarea rows={2} value={test.expected} onChange={event => updateTaskTest(index, 'expected', event.target.value)} /></Field>
+                            <label className="manager-check compact"><input type="checkbox" checked={test.hidden} onChange={event => updateTaskTest(index, 'hidden', event.target.checked)} /> Скрытый</label>
+                            <button type="button" onClick={() => removeTaskTest(index)} className="manager-button danger">×</button>
                           </div>
                         ))}
                       </section>
 
                       <div className="manager-form-grid three">
-                        <Field label="РџРѕСЂСЏРґРѕРє"><input type="number" min="0" value={taskDraft.order} onChange={event => setTaskDraft(previous => ({ ...previous, order: event.target.value }))} /></Field>
+                        <Field label="Порядок"><input type="number" min="0" value={taskDraft.order} onChange={event => setTaskDraft(previous => ({ ...previous, order: event.target.value }))} /></Field>
                         <Field label="XP"><input type="number" min="0" value={taskDraft.xp_reward} onChange={event => setTaskDraft(previous => ({ ...previous, xp_reward: event.target.value }))} /></Field>
-                        <label className="manager-check with-offset"><input type="checkbox" checked={taskDraft.is_published} onChange={event => setTaskDraft(previous => ({ ...previous, is_published: event.target.checked }))} /> РћРїСѓР±Р»РёРєРѕРІР°РЅР°</label>
+                        <label className="manager-check with-offset"><input type="checkbox" checked={taskDraft.is_published} onChange={event => setTaskDraft(previous => ({ ...previous, is_published: event.target.checked }))} /> Опубликована</label>
                       </div>
 
-                      <div className="manager-form-footer right"><button type="submit" disabled={saving === 'task'} className="manager-button primary">{saving === 'task' ? 'РЎРѕС…СЂР°РЅСЏСЋ...' : taskDraft.id ? 'РЎРѕС…СЂР°РЅРёС‚СЊ Р·Р°РґР°С‡Сѓ' : 'Р”РѕР±Р°РІРёС‚СЊ Р·Р°РґР°С‡Сѓ'}</button></div>
+                      <div className="manager-form-footer right"><button type="submit" disabled={saving === 'task'} className="manager-button primary">{saving === 'task' ? 'Сохраняю...' : taskDraft.id ? 'Сохранить задачу' : 'Добавить задачу'}</button></div>
                     </form>
                   </div>
                 )}

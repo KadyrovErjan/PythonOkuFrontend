@@ -224,7 +224,7 @@ export default function StudentLesson() {
       partCompleted,
       message: partCompleted
         ? 'Эта часть уже просмотрена. Можно перейти дальше.'
-        : 'Запусти видео — прогресс пойдёт только во время просмотра.',
+        : 'Можно смотреть части урока в любом порядке. Прогресс сохранится отдельно.',
       error: '',
     }))
   }, [])
@@ -434,7 +434,7 @@ export default function StudentLesson() {
   }
 
   function canOpenVideoPart(index) {
-    return completed || index === 0 || Boolean(videoPartsProgress[String(index - 1)]?.completed)
+    return index >= 0 && index < videoUrls.length
   }
 
   function selectVideoPart(index) {
@@ -753,7 +753,7 @@ export default function StudentLesson() {
                       <div className="lesson-video-nav">
                         <button type="button" onClick={() => selectVideoPart(activeVideoIndex - 1)} disabled={activeVideoIndex === 0}>← Предыдущее</button>
                         <span>Часть {activeVideoIndex + 1} из {videoUrls.length}</span>
-                        <button type="button" onClick={() => selectVideoPart(activeVideoIndex + 1)} disabled={!hasNextVideo || !(currentPartCompleted || watchInfo.partCompleted || completed)}>
+                        <button type="button" onClick={() => selectVideoPart(activeVideoIndex + 1)} disabled={!hasNextVideo}>
                           {hasNextVideo ? 'Следующее видео →' : 'Все видео просмотрены'}
                         </button>
                       </div>

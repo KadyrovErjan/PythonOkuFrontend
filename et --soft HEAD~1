@@ -1,0 +1,14 @@
+[33m6bff591[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m improving the frontend design
+[33m2ef3795[m Allow opening lesson video parts freely
+[33m9a708fe[m Fix adding lesson video rows
+[33m11f6ba5[m Add lesson video parts
+[33me814b21[m Improve teacher course manager
+[33mb8610db[m Improve teacher course management
+[33ma2df1f6[m Add logo splash and download
+[33mdd16d58[m Add PythonOku logo
+[33mc25df42[m fff
+[33md5ce2ae[m Fix SEO canonical domain
+[33m3554798[m Fix login API error handling
+[33ma74e93f[m Improve SEO setup
+[33m4c8e8e2[m Fix Vercel frontend deployment
+[33m673fb0a[m front finished

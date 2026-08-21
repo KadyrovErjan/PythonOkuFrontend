@@ -101,7 +101,7 @@ export default function StudentForumPost() {
           <button
             type="button"
             onClick={() => navigate('/student/forum')}
-            className="text-slate-400 hover:text-white text-sm flex items-center gap-2 mb-5 transition-colors"
+            className="text-slate-300 hover:text-white text-sm flex items-center gap-2 mb-5 transition-colors"
           >
             ← Вернуться на форум
           </button>
@@ -121,7 +121,7 @@ export default function StudentForumPost() {
               <div className="min-w-0 flex-1">
                 <div className="page-kicker"><span /> Форум PythonOku</div>
                 <h1 className="text-2xl md:text-3xl font-bold text-white mt-2">{post.title}</h1>
-                <div className="flex flex-wrap items-center gap-3 mt-3 text-xs text-slate-500">
+                <div className="flex flex-wrap items-center gap-3 mt-3 text-xs text-slate-400">
                   <span>{post.author_username || post.author_name || 'Аноним'}</span>
                   <span>•</span>
                   <span>{formatDate(post.created_at)}</span>
@@ -164,7 +164,7 @@ export default function StudentForumPost() {
                       </div>
                       <div>
                         <strong className="block text-white text-sm">{reply.author_username || reply.author_name || 'Аноним'}</strong>
-                        <small className="text-slate-500">{formatDate(reply.created_at)}</small>
+                        <small className="text-slate-400">{formatDate(reply.created_at)}</small>
                       </div>
                       {reply.is_best_answer && <span className="submission-state done ml-auto">Лучший ответ</span>}
                     </div>

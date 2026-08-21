@@ -10,6 +10,8 @@ const notificationIcon = {
   new_lesson: '📚',
   achievement: '🔥',
   system: '🔔',
+  lesson_starting: '🔔',
+  lesson_ended: '✅',
 }
 
 export default function NotificationsPage({ role }) {
@@ -26,12 +28,57 @@ export default function NotificationsPage({ role }) {
 
     try {
       const requests = [api.get('notifications/')]
-      if (role === 'student') requests.unshift(api.get('users/me/'))
+      if (role === 'student') {
+        requests.unshift(api.get('users/me/'))
+        requests.push(api.get('schedule/'))
+      }
 
       const responses = await Promise.all(requests)
       if (role === 'student') {
         setUser(responses[0].data)
-        setNotifications(responses[1].data || [])
+        const apiNotifications = responses[1].data || []
+        const scheduleData = responses[2].data || []
+        
+        // Generate lesson reminders
+        const now = new Date()
+        const lessonNotifications = []
+        
+        scheduleData.forEach(lesson => {
+          const lessonDate = new Date(lesson.date)
+          const timeDiff = (lessonDate - now) / (1000 * 60) // difference in minutes
+          
+          // Reminder: lesson starting soon (within 15 minutes)
+          if (timeDiff > 0 && timeDiff <= 15) {
+            lessonNotifications.push({
+              id: `lesson-starting-${lesson.id}`,
+              type: 'lesson_starting',
+              title: 'Урок скоро начнётся!',
+              text: `"${lesson.title}" начинается через ${Math.round(timeDiff)} мин. Подготовьтесь к занятию.`,
+              message: `"${lesson.title}" начинается через ${Math.round(timeDiff)} мин.`,
+              created_at: new Date(lessonDate.getTime() - 15 * 60 * 1000).toISOString(),
+              is_read: false,
+            })
+          }
+          
+          // Reminder: lesson just ended (within last 30 minutes)
+          if (timeDiff < 0 && timeDiff > -30) {
+            lessonNotifications.push({
+              id: `lesson-ended-${lesson.id}`,
+              type: 'lesson_ended',
+              title: 'Урок завершён',
+              text: `"${lesson.title}" завершился. Не забудьте выполнить домашнее задание!`,
+              message: `"${lesson.title}" завершился.`,
+              created_at: lessonDate.toISOString(),
+              is_read: false,
+            })
+          }
+        })
+        
+        // Combine and sort all notifications
+        const allNotifications = [...apiNotifications, ...lessonNotifications]
+        allNotifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        
+        setNotifications(allNotifications)
       } else {
         setNotifications(responses[0].data || [])
       }
@@ -57,6 +104,12 @@ export default function NotificationsPage({ role }) {
   }, [loadNotifications])
 
   const markRead = async (id) => {
+    // Only mark API notifications as read, skip lesson reminders
+    if (id.toString().startsWith('lesson-')) {
+      setNotifications(items => items.map(item => item.id === id ? { ...item, is_read: true } : item))
+      return
+    }
+    
     setNotifications(items => items.map(item => item.id === id ? { ...item, is_read: true } : item))
     try {
       await api.patch(`notifications/${id}/read/`)
@@ -144,8 +197,8 @@ export default function NotificationsPage({ role }) {
                           </span>
                         )}
                       </div>
-                      <p className="text-slate-400 text-sm mt-1 leading-relaxed">{item.text || item.message}</p>
-                      <small className="block text-slate-600 mt-3">
+                      <p className="text-slate-300 text-sm mt-1 leading-relaxed">{item.text || item.message}</p>
+                      <small className="block text-slate-500 mt-3">
                         {new Date(item.created_at).toLocaleString('ru-RU', {
                           day: 'numeric',
                           month: 'long',

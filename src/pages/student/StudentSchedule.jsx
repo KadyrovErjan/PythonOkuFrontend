@@ -24,9 +24,6 @@ export default function StudentSchedule() {
   const upcoming = schedule
     .filter(item => new Date(item.date) >= now)
     .sort((a, b) => new Date(a.date) - new Date(b.date))
-  const past = schedule
-    .filter(item => new Date(item.date) < now)
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
 
   const formatDate = (date) => new Date(date).toLocaleDateString('ru-RU', {
     day: 'numeric',
@@ -65,9 +62,9 @@ export default function StudentSchedule() {
               <h3 className="text-white font-medium">{item.title}</h3>
             </div>
             {item.description && (
-              <p className="text-slate-400 text-sm mb-2">{item.description}</p>
+              <p className="text-slate-300 text-sm mb-2">{item.description}</p>
             )}
-            <div className="flex items-center gap-3 text-xs text-slate-500">
+            <div className="flex items-center gap-3 text-xs text-slate-400">
               <span>📅 {formatDate(item.date)}</span>
               <span>🕐 {formatTime(item.date)}</span>
               {item.duration_minutes && <span>⏱ {item.duration_minutes} мин</span>}
@@ -97,16 +94,16 @@ export default function StudentSchedule() {
         <div className="max-w-2xl mx-auto">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-white">Расписание</h1>
-            <p className="text-slate-400 mt-1">Google Meet-уроки с учителем</p>
+            <p className="text-slate-300 mt-1">Google Meet-уроки с учителем</p>
           </div>
 
           {schedule.length === 0 ? (
-            <div className="text-center py-20 text-slate-500">
+            <div className="text-center py-20 text-slate-300">
               Уроков в расписании нет
             </div>
           ) : (
             <>
-              {upcoming.length > 0 && (
+              {upcoming.length > 0 ? (
                 <div className="mb-6">
                   <h2 className="text-white font-semibold mb-3 flex items-center gap-2">
                     <span>📅</span> Предстоящие ({upcoming.length})
@@ -115,16 +112,9 @@ export default function StudentSchedule() {
                     {upcoming.map(item => <LessonCard key={item.id} item={item} />)}
                   </div>
                 </div>
-              )}
-
-              {past.length > 0 && (
-                <div>
-                  <h2 className="text-slate-400 font-semibold mb-3 flex items-center gap-2">
-                    <span>🕐</span> Прошедшие ({past.length})
-                  </h2>
-                  <div className="space-y-3">
-                    {past.map(item => <LessonCard key={item.id} item={item} isPast />)}
-                  </div>
+              ) : (
+                <div className="text-center py-20 text-slate-300">
+                  Нет предстоящих уроков
                 </div>
               )}
             </>

@@ -33,7 +33,7 @@ export default function StudentRating() {
 
   if (loading) return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-      <div className="text-slate-400">Загрузка...</div>
+      <div className="text-slate-300">Загрузка...</div>
     </div>
   )
 
@@ -46,7 +46,7 @@ export default function StudentRating() {
 
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-white">Рейтинг</h1>
-            <p className="text-slate-400 mt-1">Топ-50 учеников по XP</p>
+            <p className="text-slate-300 mt-1">Топ-50 учеников по XP</p>
           </div>
 
           {/* Моя позиция */}
@@ -126,7 +126,7 @@ export default function StudentRating() {
           </div>
 
           {leaders.length === 0 && (
-            <div className="text-center py-20 text-slate-500">Список пуст</div>
+            <div className="text-center py-20 text-slate-400">Список пуст</div>
           )}
 
         </div>

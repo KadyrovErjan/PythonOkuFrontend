@@ -657,14 +657,14 @@ export default function StudentLesson() {
         <div className="border-b border-slate-800 px-8 py-4">
           <button
             onClick={() => navigate(-1)}
-            className="text-slate-400 hover:text-white text-sm mb-2 flex items-center gap-2"
+            className="text-slate-300 hover:text-white text-sm mb-2 flex items-center gap-2"
           >
             ← Назад
           </button>
           <div className="flex items-center justify-between gap-4">
             <div>
               <h1 className="text-xl font-bold text-white">{lesson?.title}</h1>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 mt-1">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-300 mt-1">
                 {lesson?.duration_minutes > 0 && <span>⏱ {lesson.duration_minutes} мин</span>}
                 {videoUrls.length > 1 && <span>🎞 {activeVideoIndex + 1}/{videoUrls.length}</span>}
                 <span className="text-yellow-400">+{lesson?.xp_reward} XP</span>
@@ -685,7 +685,7 @@ export default function StudentLesson() {
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all
                 ${activeTab === tab
                   ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
             >
               {tabLabels[tab]}
             </button>
@@ -763,7 +763,7 @@ export default function StudentLesson() {
               ) : (
                 <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-5 mb-4">
                   <h2 className="text-white font-semibold mb-2 text-sm">Видео не добавлено</h2>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-slate-300 text-sm">
                     Чтобы урок засчитывался автоматически, добавь ссылку YouTube в настройках урока.
                   </p>
                 </div>
@@ -791,7 +791,7 @@ export default function StudentLesson() {
               {quizzes.length === 0 ? (
                 <div className="text-center py-16">
                   <div className="text-5xl mb-4">📝</div>
-                  <p className="text-slate-400">Тестов для этого урока пока нет</p>
+                  <p className="text-slate-300">Тестов для этого урока пока нет</p>
                 </div>
               ) : quizzes.map((quiz, index) => {
                 const result = quizResults[quiz.id]
@@ -876,7 +876,7 @@ export default function StudentLesson() {
                 {messages.length === 0 && (
                   <div className="text-center py-12">
                     <div className="text-4xl mb-3">🤖</div>
-                    <p className="text-slate-400 text-sm">
+                    <p className="text-slate-300 text-sm">
                       Привет! Задай вопрос по уроку — я помогу разобраться.
                     </p>
                   </div>

@@ -188,10 +188,10 @@ export default function StudentForum() {
                         <h3 className="text-white font-semibold text-lg">{post.title}</h3>
                         {post.is_solved && <span className="submission-state done">Решено</span>}
                       </div>
-                      <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
+                      <p className="text-slate-300 text-sm leading-relaxed line-clamp-2">
                         {post.content}
                       </p>
-                      <div className="flex flex-wrap items-center gap-3 mt-3 text-xs text-slate-500">
+                      <div className="flex flex-wrap items-center gap-3 mt-3 text-xs text-slate-400">
                         <span>{post.author_username || post.author_name || 'Аноним'}</span>
                         <span>•</span>
                         <span>{formatDate(post.created_at)}</span>
@@ -203,7 +203,7 @@ export default function StudentForum() {
                         )}
                       </div>
                     </div>
-                    <div className="text-right text-slate-400 text-sm">
+                    <div className="text-right text-slate-300 text-sm">
                       <strong className="block text-white">{post.replies_count || 0}</strong>
                       <span>ответов</span>
                       <small className="block mt-2 text-slate-600">{post.views || 0} просмотров</small>

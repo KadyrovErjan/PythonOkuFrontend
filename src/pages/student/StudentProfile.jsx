@@ -41,7 +41,7 @@ export default function StudentProfile() {
 
   if (loading) return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-      <div className="text-slate-400">Загрузка...</div>
+      <div className="text-slate-300">Загрузка...</div>
     </div>
   )
 
@@ -71,7 +71,7 @@ export default function StudentProfile() {
 
               <div className="flex-1 min-w-0">
                 <h2 className="text-xl font-bold text-white">{user?.username}</h2>
-                <div className="text-slate-400 text-sm mt-0.5">{user?.email}</div>
+                <div className="text-slate-300 text-sm mt-0.5">{user?.email}</div>
 
                 <div className="flex items-center gap-4 mt-3">
                   <div className="flex items-center gap-1.5">
@@ -93,7 +93,7 @@ export default function StudentProfile() {
             {/* Bio */}
             <div className="mt-5 pt-5 border-t border-slate-700">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-slate-400 text-sm font-medium">О себе</span>
+                <span className="text-slate-300 text-sm font-medium">О себе</span>
                 {!editing && (
                   <button
                     onClick={() => setEditing(true)}
@@ -116,7 +116,7 @@ export default function StudentProfile() {
                   <div className="flex gap-2 justify-end">
                     <button
                       onClick={() => { setEditing(false); setBio(user?.bio || '') }}
-                      className="px-3 py-1.5 text-slate-400 hover:text-white text-sm transition-colors"
+                      className="px-3 py-1.5 text-slate-300 hover:text-white text-sm transition-colors"
                     >
                       Отмена
                     </button>
@@ -154,7 +154,7 @@ export default function StudentProfile() {
               />
             </div>
 
-            <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center justify-between text-xs text-slate-300">
               <span>{xp} / {CERT_XP} XP</span>
               {xpLeft > 0
                 ? <span>Ещё {xpLeft} XP до сертификата</span>
@@ -170,7 +170,7 @@ export default function StudentProfile() {
             </h3>
 
             {achievements.length === 0 ? (
-              <div className="text-center py-6 text-slate-500 text-sm">
+              <div className="text-center py-6 text-slate-400 text-sm">
                 Пока нет достижений. Продолжай учиться!
               </div>
             ) : (

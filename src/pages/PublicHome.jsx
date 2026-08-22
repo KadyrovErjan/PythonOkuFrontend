@@ -27,26 +27,26 @@ export default function PublicHome() {
   const { t } = useTranslation()
   
   const highlights = [
-    { value: '20+', label: t('public.stats.lessons') },
-    { value: '100%', label: t('public.features.practice') },
-    { value: '1', label: t('dashboard.myProgress') },
+    { value: '20+', label: t('public.stats.shortLessons') },
+    { value: '100%', label: t('public.stats.browserPractice') },
+    { value: '1', label: t('public.stats.clearPath') },
   ]
 
   const program = [
     {
       icon: 'book',
-      title: t('public.features.interactive'),
-      text: t('public.features.interactiveDesc'),
+      title: t('public.program.pythonBasics'),
+      text: t('public.program.pythonBasicsDesc'),
     },
     {
       icon: 'task',
-      title: t('homework.homework'),
-      text: t('public.features.practiceDesc'),
+      title: t('public.program.lessonTasks'),
+      text: t('public.program.lessonTasksDesc'),
     },
     {
       icon: 'trend',
-      title: t('dashboard.myProgress'),
-      text: t('public.features.communityDesc'),
+      title: t('public.program.studentProgress'),
+      text: t('public.program.studentProgressDesc'),
     },
   ]
 
@@ -62,8 +62,8 @@ export default function PublicHome() {
         </Link>
 
         <nav className="public-nav" aria-label={t('sidebar.navigation')}>
-          <a href="#program">{t('courses.course')}</a>
-          <a href="#practice">{t('public.features.practice')}</a>
+          <a href="#program">{t('public.nav.program')}</a>
+          <a href="#practice">{t('public.nav.practice')}</a>
           <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
             <LanguageSwitcher />
             <Link to="/login" className="public-login">{t('auth.login')}</Link>
@@ -74,15 +74,15 @@ export default function PublicHome() {
       <main>
         <section className="public-hero" aria-labelledby="public-title">
           <div className="public-hero-copy">
-            <div className="eyebrow"><span className="eyebrow-dot" /> {t('public.hero.title')}</div>
+            <div className="eyebrow"><span className="eyebrow-dot" /> {t('public.hero.eyebrow')}</div>
             <h1 id="public-title">PythonOku</h1>
-            <p className="public-lead">{t('public.hero.subtitle')}</p>
+            <p className="public-lead">{t('public.hero.description')}</p>
             <div className="public-actions">
               <Link to="/login" className="public-primary">
                 <span>{t('public.hero.cta')}</span>
                 <Icon name="arrow" size={18} />
               </Link>
-              <a href="#program" className="public-secondary">{t('courses.course')}</a>
+              <a href="#program" className="public-secondary">{t('public.hero.viewCourse')}</a>
               <a href="/logo.svg" download="pythonoku-logo.svg" className="public-secondary public-download">
                 <Icon name="download" size={17} />
                 <span>{t('common.download')}</span>
@@ -113,8 +113,8 @@ export default function PublicHome() {
 
         <section id="program" className="public-section" aria-labelledby="program-title">
           <div className="public-section-head">
-            <span>{t('courses.course')}</span>
-            <h2 id="program-title">{t('public.hero.subtitle')}</h2>
+            <span>{t('public.section.program')}</span>
+            <h2 id="program-title">{t('public.section.programTitle')}</h2>
           </div>
           <div className="public-program-grid">
             {program.map((item) => (
@@ -129,11 +129,11 @@ export default function PublicHome() {
 
         <section id="practice" className="public-band" aria-labelledby="practice-title">
           <div>
-            <span>{t('public.features.practice')}</span>
-            <h2 id="practice-title">{t('public.features.practiceDesc')}</h2>
+            <span>{t('public.band.practice')}</span>
+            <h2 id="practice-title">{t('public.band.practiceTitle')}</h2>
           </div>
-          <p>{t('public.hero.subtitle')}</p>
-          <Link to="/login" className="public-band-action">{t('auth.login')}</Link>
+          <p>{t('public.band.practiceDesc')}</p>
+          <Link to="/login" className="public-band-action">{t('public.band.goToDashboard')}</Link>
         </section>
       </main>
     </div>

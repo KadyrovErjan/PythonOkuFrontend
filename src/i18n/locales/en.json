@@ -393,14 +393,42 @@
   },
   "public": {
     "hero": {
-      "title": "Learn Python in Kyrgyz",
-      "subtitle": "Want to learn modern programming? Start with us!",
-      "cta": "Start Today",
+      "eyebrow": "Python for beginners",
+      "description": "Online platform for learning Python: short lessons, practice, homework and clear progress for students.",
+      "cta": "Start Learning",
+      "viewCourse": "View Course",
       "login": "Login"
     },
     "brand": {
       "name": "PythonOku",
-      "tagline": "learn at your own pace"
+      "tagline": "online Python course"
+    },
+    "nav": {
+      "program": "Program",
+      "practice": "Practice"
+    },
+    "stats": {
+      "shortLessons": "short lessons",
+      "browserPractice": "practice in browser",
+      "clearPath": "clear path"
+    },
+    "program": {
+      "pythonBasics": "Python Basics",
+      "pythonBasicsDesc": "Variables, conditions, loops, functions and working with data with simple examples.",
+      "lessonTasks": "Tasks after lesson",
+      "lessonTasksDesc": "Each topic is reinforced with practice so knowledge doesn't remain just theory.",
+      "studentProgress": "Student Progress",
+      "studentProgressDesc": "Student and teacher see course progress, homework and results."
+    },
+    "section": {
+      "program": "Program",
+      "programTitle": "From first line to confident practice"
+    },
+    "band": {
+      "practice": "Practice",
+      "practiceTitle": "Code is written right after explanation",
+      "practiceDesc": "PythonOku helps students move in small steps: watch lesson, solve tasks, submit homework and see results.",
+      "goToDashboard": "Go to dashboard"
     },
     "features": {
       "title": "Why us?",
@@ -410,11 +438,6 @@
       "practiceDesc": "The way to master programming is to write a lot",
       "community": "Community",
       "communityDesc": "Connect with students and teachers on the forum"
-    },
-    "stats": {
-      "students": "Students",
-      "lessons": "Lessons",
-      "tasks": "Tasks"
     }
   },
   "errors": {

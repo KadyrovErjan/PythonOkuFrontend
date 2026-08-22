@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Icon from '../components/Icon'
 import BrandLogo from '../components/BrandLogo'
+import LanguageSwitcher from '../components/LanguageSwitcher'
 
 const HeroArt = () => (
-  <svg viewBox="0 0 220 220" role="img" aria-label="Иллюстрация PythonOku" style={{ position: 'relative', zIndex: 1, width: 'min(52%, 18rem)', height: 'auto', filter: 'drop-shadow(0 22px 44px rgba(109,74,255,.22))' }}>
+  <svg viewBox="0 0 220 220" role="img" aria-label="PythonOku illustration" style={{ position: 'relative', zIndex: 1, width: 'min(52%, 18rem)', height: 'auto', filter: 'drop-shadow(0 22px 44px rgba(109,74,255,.22))' }}>
     <defs>
       <linearGradient id="py-ok-grad" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stopColor="#6d4aff" />
@@ -21,31 +23,33 @@ const HeroArt = () => (
   </svg>
 )
 
-const highlights = [
-  { value: '20+', label: 'коротких уроков' },
-  { value: '100%', label: 'практика в браузере' },
-  { value: '1', label: 'понятный маршрут' },
-]
-
-const program = [
-  {
-    icon: 'book',
-    title: 'Основы Python',
-    text: 'Переменные, условия, циклы, функции и работа с данными на простых примерах.',
-  },
-  {
-    icon: 'task',
-    title: 'Задачи после урока',
-    text: 'Каждая тема закрепляется практикой, чтобы знания не оставались только теорией.',
-  },
-  {
-    icon: 'trend',
-    title: 'Прогресс ученика',
-    text: 'Ученик и преподаватель видят движение по курсу, домашние задания и результаты.',
-  },
-]
-
 export default function PublicHome() {
+  const { t } = useTranslation()
+  
+  const highlights = [
+    { value: '20+', label: t('public.stats.lessons') },
+    { value: '100%', label: t('public.features.practice') },
+    { value: '1', label: t('dashboard.myProgress') },
+  ]
+
+  const program = [
+    {
+      icon: 'book',
+      title: t('public.features.interactive'),
+      text: t('public.features.interactiveDesc'),
+    },
+    {
+      icon: 'task',
+      title: t('homework.homework'),
+      text: t('public.features.practiceDesc'),
+    },
+    {
+      icon: 'trend',
+      title: t('dashboard.myProgress'),
+      text: t('public.features.communityDesc'),
+    },
+  ]
+
   return (
     <div className="public-shell">
       <header className="public-header">
@@ -53,35 +57,35 @@ export default function PublicHome() {
           <BrandLogo />
           <div className="brand-copy">
             <div className="brand-name">Python<span>Oku</span></div>
-            <div className="brand-caption">онлайн-курс Python</div>
+            <div className="brand-caption">{t('public.brand.tagline')}</div>
           </div>
         </Link>
 
-        <nav className="public-nav" aria-label="Основная навигация">
-          <a href="#program">Программа</a>
-          <a href="#practice">Практика</a>
-          <Link to="/login" className="public-login">Войти</Link>
+        <nav className="public-nav" aria-label={t('sidebar.navigation')}>
+          <a href="#program">{t('courses.course')}</a>
+          <a href="#practice">{t('public.features.practice')}</a>
+          <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
+            <LanguageSwitcher />
+            <Link to="/login" className="public-login">{t('auth.login')}</Link>
+          </div>
         </nav>
       </header>
 
       <main>
         <section className="public-hero" aria-labelledby="public-title">
           <div className="public-hero-copy">
-            <div className="eyebrow"><span className="eyebrow-dot" /> Python для начинающих</div>
+            <div className="eyebrow"><span className="eyebrow-dot" /> {t('public.hero.title')}</div>
             <h1 id="public-title">PythonOku</h1>
-            <p className="public-lead">
-              Онлайн-платформа для изучения Python: короткие уроки, практика,
-              домашние задания и понятный прогресс для учеников.
-            </p>
+            <p className="public-lead">{t('public.hero.subtitle')}</p>
             <div className="public-actions">
               <Link to="/login" className="public-primary">
-                <span>Начать обучение</span>
+                <span>{t('public.hero.cta')}</span>
                 <Icon name="arrow" size={18} />
               </Link>
-              <a href="#program" className="public-secondary">Посмотреть курс</a>
+              <a href="#program" className="public-secondary">{t('courses.course')}</a>
               <a href="/logo.svg" download="pythonoku-logo.svg" className="public-secondary public-download">
                 <Icon name="download" size={17} />
-                <span>Скачать логотип</span>
+                <span>{t('common.download')}</span>
               </a>
             </div>
 
@@ -109,8 +113,8 @@ export default function PublicHome() {
 
         <section id="program" className="public-section" aria-labelledby="program-title">
           <div className="public-section-head">
-            <span>Программа</span>
-            <h2 id="program-title">От первой строки к уверенной практике</h2>
+            <span>{t('courses.course')}</span>
+            <h2 id="program-title">{t('public.hero.subtitle')}</h2>
           </div>
           <div className="public-program-grid">
             {program.map((item) => (
@@ -125,14 +129,11 @@ export default function PublicHome() {
 
         <section id="practice" className="public-band" aria-labelledby="practice-title">
           <div>
-            <span>Практика</span>
-            <h2 id="practice-title">Код пишется сразу после объяснения</h2>
+            <span>{t('public.features.practice')}</span>
+            <h2 id="practice-title">{t('public.features.practiceDesc')}</h2>
           </div>
-          <p>
-            PythonOku помогает ученику двигаться маленькими шагами: смотреть урок,
-            решать задачи, отправлять домашние работы и видеть результат.
-          </p>
-          <Link to="/login" className="public-band-action">Перейти в кабинет</Link>
+          <p>{t('public.hero.subtitle')}</p>
+          <Link to="/login" className="public-band-action">{t('auth.login')}</Link>
         </section>
       </main>
     </div>

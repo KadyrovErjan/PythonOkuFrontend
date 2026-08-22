@@ -2246,15 +2246,15 @@ main input, main textarea, main select { color-scheme: light; }
 .lang-btn {
   display: flex;
   align-items: center;
-  gap: .4rem;
-  padding: .45rem .65rem;
+  gap: .35rem;
+  padding: .4rem .6rem;
   border: 1px solid transparent;
   border-radius: .6rem;
   color: #8d99ac;
   background: transparent;
   font: inherit;
-  font-size: .68rem;
-  font-weight: 680;
+  font-size: .7rem;
+  font-weight: 700;
   transition: all 180ms ease;
   cursor: pointer;
 }
@@ -2271,20 +2271,18 @@ main input, main textarea, main select { color-scheme: light; }
 }
 
 .lang-btn .flag {
-  font-size: .95rem;
+  font-size: 1rem;
   line-height: 1;
 }
 
 .lang-btn .lang-name {
   white-space: nowrap;
+  font-size: .65rem;
+  letter-spacing: .02em;
 }
 
 @media (max-width: 640px) {
-  .lang-btn .lang-name {
-    display: none;
-  }
-  
   .lang-btn {
-    padding: .45rem;
+    padding: .4rem .5rem;
   }
 }

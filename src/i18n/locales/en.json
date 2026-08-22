@@ -22,7 +22,9 @@
     "download": "Download",
     "upload": "Upload",
     "continue": "Continue",
-    "logout": "Logout"
+    "logout": "Logout",
+    "wait": "Please wait...",
+    "saving": "Saving..."
   },
   "auth": {
     "welcome": "Welcome",
@@ -52,7 +54,61 @@
     "enterPassword": "Enter password",
     "enterUsername": "Enter username",
     "passwordMinLength": "Minimum 8 characters",
-    "checkingAccess": "Checking access"
+    "checkingAccess": "Checking access",
+    "platformTagline": "platform for growth",
+    "tagline": "Knowledge that stays",
+    "hero": {
+      "title": "Python is simpler when",
+      "highlight": "the path is clear.",
+      "description": "Short lessons, practice and clear progress — everything you need to move from the first line of code to real projects."
+    },
+    "features": {
+      "support": "Teacher support"
+    },
+    "welcomeBack": "Welcome back",
+    "getStarted": "Start learning",
+    "loginPrompt": "Log in with email or username and continue where you left off.",
+    "registerPrompt": "Create an account — username can have spaces, like a real name.",
+    "authentication": "Authentication",
+    "emailOrUsername": "Email or username",
+    "emailPlaceholder": "admin@gmail.com or Kadyrov Erzhan",
+    "usernamePlaceholder": "Kadyrov Erzhan",
+    "passwordPlaceholder": "Minimum 6 characters",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "continue": "Continue",
+    "createAccount": "Create account",
+    "termsNotice": "By continuing, you agree to the platform rules.",
+    "wait": "Please wait...",
+    "reset": {
+      "title": "Account recovery",
+      "secureAccess": "secure access",
+      "accountRecovery": "Account recovery",
+      "restoreTitle": "Restore access",
+      "restoreSubtitle": "in a couple of minutes.",
+      "description": "We will send a one-time code to your linked email. The code is valid for one hour and will disappear after use.",
+      "benefit1": "Password is not sent by email",
+      "benefit2": "Code can only be used once",
+      "benefit3": "Your learning progress stays in place",
+      "steps": "Recovery steps",
+      "emailPrompt": "Enter the email you used during registration. We will send a confirmation code to it.",
+      "sendingCode": "Sending email...",
+      "getCode": "Get code",
+      "checkEmail": "Check your email",
+      "codeSent": "Code sent to",
+      "checkSpam": "Sometimes the email lands in the 'Spam' folder.",
+      "codeFromEmail": "Code from email",
+      "newPassword": "New password",
+      "passwordMinLength": "Minimum 8 characters",
+      "confirmPassword": "Repeat password",
+      "repeatPassword": "Repeat new password",
+      "changePassword": "Change password",
+      "resendCode": "Send code again",
+      "codeRequired": "Enter the six-digit code from the email.",
+      "passwordChanged": "Password changed",
+      "successMessage": "You can now log in to PythonOku with your new password.",
+      "goToLogin": "Go to login"
+    }
   },
   "sidebar": {
     "workspace": "Workspace",
@@ -367,7 +423,9 @@
     "networkError": "Network error",
     "unknownError": "Unknown error",
     "tryAgain": "Try again",
-    "goHome": "Go home"
+    "goHome": "Go home",
+    "serverError": "Could not connect to the server. Try again.",
+    "connectionError": "Could not connect to API. Check api.pythonoku.edu.kg and CORS settings."
   },
   "time": {
     "seconds": "sec",

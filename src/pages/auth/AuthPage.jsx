@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import api from '../../api/axios'
 import Icon from '../../components/Icon'
 import BrandLogo from '../../components/BrandLogo'
+import LanguageSwitcher from '../../components/LanguageSwitcher'
 
 export default function AuthPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [isLogin, setIsLogin] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -49,7 +52,7 @@ export default function AuthPage() {
     const messages = collectErrorMessages(data)
     return messages.length
       ? messages.join(' ')
-      : 'Не удалось связаться с сервером. Попробуйте ещё раз.'
+      : t('errors.serverError')
   }
 
   const handleSubmit = async (event) => {
@@ -73,7 +76,7 @@ export default function AuthPage() {
       localStorage.setItem('refresh', response.data.refresh)
       navigate('/app')
     } catch (err) {
-      setError(err.response ? formatError(err.response.data) : 'Не удалось подключиться к API. Проверьте api.pythonoku.edu.kg и настройки CORS.')
+      setError(err.response ? formatError(err.response.data) : t('errors.connectionError'))
     } finally {
       setLoading(false)
     }
@@ -81,22 +84,19 @@ export default function AuthPage() {
 
   return (
     <div className="auth-shell">
-      <section className="auth-story" aria-label="О платформе PythonOku">
+      <section className="auth-story" aria-label={t('public.brand.tagline')}>
         <div className="brand auth-brand">
           <BrandLogo />
           <div className="brand-copy">
             <div className="brand-name">Python<span>Oku</span></div>
-            <div className="brand-caption">платформа для роста</div>
+            <div className="brand-caption">{t('auth.platformTagline')}</div>
           </div>
         </div>
 
         <div className="auth-hero">
-          <div className="eyebrow"><span className="eyebrow-dot" /> Знания, которые остаются</div>
-          <h1 className="auth-title">Python проще, когда <span>путь виден.</span></h1>
-          <p className="auth-subtitle">
-            Короткие уроки, практика и понятный прогресс — всё, что нужно,
-            чтобы двигаться от первой строки кода к настоящим проектам.
-          </p>
+          <div className="eyebrow"><span className="eyebrow-dot" /> {t('auth.tagline')}</div>
+          <h1 className="auth-title">{t('auth.hero.title')} <span>{t('auth.hero.highlight')}</span></h1>
+          <p className="auth-subtitle">{t('auth.hero.description')}</p>
 
           <div className="code-card" aria-hidden="true">
             <div className="code-card-bar">
@@ -107,34 +107,34 @@ export default function AuthPage() {
           </div>
         </div>
 
-        <div className="auth-features" aria-label="Возможности платформы">
-          <span className="auth-feature">Практические уроки</span>
-          <span className="auth-feature">Живой прогресс</span>
-          <span className="auth-feature">Поддержка преподавателя</span>
+        <div className="auth-features" aria-label={t('public.features.title')}>
+          <span className="auth-feature">{t('public.features.interactive')}</span>
+          <span className="auth-feature">{t('dashboard.myProgress')}</span>
+          <span className="auth-feature">{t('auth.features.support')}</span>
         </div>
       </section>
 
       <section className="auth-form-side">
         <div className="auth-form-wrap">
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+            <LanguageSwitcher />
+          </div>
+          
           <div className="auth-form-heading">
-            <h2>{isLogin ? 'С возвращением' : 'Начните обучение'}</h2>
-            <p>
-              {isLogin
-                ? 'Войдите по email или имени пользователя и продолжите с того места, где остановились.'
-                : 'Создайте аккаунт — имя пользователя может быть с пробелом, как настоящее имя.'}
-            </p>
+            <h2>{isLogin ? t('auth.welcomeBack') : t('auth.getStarted')}</h2>
+            <p>{isLogin ? t('auth.loginPrompt') : t('auth.registerPrompt')}</p>
           </div>
 
           <div className="auth-form">
-            <div className="auth-tabs" role="tablist" aria-label="Авторизация">
-              <button type="button" role="tab" aria-selected={isLogin} onClick={() => setMode(true)} className={`auth-tab${isLogin ? ' active' : ''}`}>Войти</button>
-              <button type="button" role="tab" aria-selected={!isLogin} onClick={() => setMode(false)} className={`auth-tab${!isLogin ? ' active' : ''}`}>Регистрация</button>
+            <div className="auth-tabs" role="tablist" aria-label={t('auth.authentication')}>
+              <button type="button" role="tab" aria-selected={isLogin} onClick={() => setMode(true)} className={`auth-tab${isLogin ? ' active' : ''}`}>{t('auth.login')}</button>
+              <button type="button" role="tab" aria-selected={!isLogin} onClick={() => setMode(false)} className={`auth-tab${!isLogin ? ' active' : ''}`}>{t('auth.register')}</button>
             </div>
 
             <form onSubmit={handleSubmit}>
               {isLogin ? (
                 <div className="form-group">
-                  <label className="form-label" htmlFor="identifier">Email или имя пользователя</label>
+                  <label className="form-label" htmlFor="identifier">{t('auth.emailOrUsername')}</label>
                   <div className="input-wrap">
                     <Icon name="user" className="input-icon" />
                     <input
@@ -144,7 +144,7 @@ export default function AuthPage() {
                       name="identifier"
                       value={form.identifier}
                       onChange={handleChange}
-                      placeholder="admin@gmail.com или Кадыров Эржан"
+                      placeholder={t('auth.emailPlaceholder')}
                       autoComplete="username"
                       required
                     />
@@ -153,7 +153,7 @@ export default function AuthPage() {
               ) : (
                 <>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="username">Имя пользователя</label>
+                    <label className="form-label" htmlFor="username">{t('auth.username')}</label>
                     <div className="input-wrap">
                       <Icon name="user" className="input-icon" />
                       <input
@@ -163,7 +163,7 @@ export default function AuthPage() {
                         name="username"
                         value={form.username}
                         onChange={handleChange}
-                        placeholder="Кадыров Эржан"
+                        placeholder={t('auth.usernamePlaceholder')}
                         autoComplete="username"
                         required
                       />
@@ -171,7 +171,7 @@ export default function AuthPage() {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label" htmlFor="email">Электронная почта</label>
+                    <label className="form-label" htmlFor="email">{t('auth.email')}</label>
                     <div className="input-wrap">
                       <Icon name="mail" className="input-icon" />
                       <input
@@ -192,8 +192,8 @@ export default function AuthPage() {
 
               <div className="form-group">
                 <div className="form-label-row">
-                  <label className="form-label" htmlFor="password">Пароль</label>
-                  {isLogin && <button type="button" className="forgot-link" onClick={() => navigate('/forgot-password')}>Забыли пароль?</button>}
+                  <label className="form-label" htmlFor="password">{t('auth.password')}</label>
+                  {isLogin && <button type="button" className="forgot-link" onClick={() => navigate('/forgot-password')}>{t('auth.forgotPassword')}</button>}
                 </div>
                 <div className="input-wrap">
                   <Icon name="lock" className="input-icon" />
@@ -204,7 +204,7 @@ export default function AuthPage() {
                     name="password"
                     value={form.password}
                     onChange={handleChange}
-                    placeholder="Минимум 6 символов"
+                    placeholder={t('auth.passwordPlaceholder')}
                     autoComplete={isLogin ? 'current-password' : 'new-password'}
                     minLength={6}
                     required
@@ -213,7 +213,7 @@ export default function AuthPage() {
                     type="button"
                     className="password-toggle"
                     onClick={() => setShowPassword(value => !value)}
-                    aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+                    aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                   >
                     <Icon name={showPassword ? 'eyeOff' : 'eye'} size={17} />
                   </button>
@@ -223,15 +223,13 @@ export default function AuthPage() {
               {error && <div className="auth-error" role="alert"><Icon name="alert" size={17} /> <span>{error}</span></div>}
 
               <button type="submit" disabled={loading} className="auth-submit">
-                <span>{loading ? 'Подождите…' : isLogin ? 'Продолжить' : 'Создать аккаунт'}</span>
+                <span>{loading ? t('common.wait') : isLogin ? t('auth.continue') : t('auth.createAccount')}</span>
                 {!loading && <Icon name="arrow" size={18} />}
               </button>
             </form>
           </div>
 
-          <p className="auth-note">
-            Продолжая, вы соглашаетесь с правилами платформы.<br />PythonOku · 2026
-          </p>
+          <p className="auth-note">{t('auth.termsNotice')}<br />PythonOku · 2026</p>
         </div>
       </section>
     </div>

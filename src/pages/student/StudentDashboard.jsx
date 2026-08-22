@@ -1,19 +1,24 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import StudentSidebar from '../../components/StudentSidebar'
 import Icon from '../../components/Icon'
 import api from '../../api/axios'
 
-const formatDate = () => new Intl.DateTimeFormat('ru-RU', {
-  weekday: 'long', day: 'numeric', month: 'long',
-}).format(new Date())
-
 export default function StudentDashboard() {
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [progress, setProgress] = useState([])
   const [notifCount, setNotifCount] = useState(0)
   const [loading, setLoading] = useState(true)
+
+  const formatDate = () => {
+    const locales = { ky: 'ky-KG', ru: 'ru-RU', en: 'en-US' }
+    return new Intl.DateTimeFormat(locales[i18n.language] || 'ru-RU', {
+      weekday: 'long', day: 'numeric', month: 'long',
+    }).format(new Date())
+  }
 
   useEffect(() => {
     Promise.all([
@@ -39,14 +44,14 @@ export default function StudentDashboard() {
   }
 
   if (loading) return (
-    <div className="app-loader"><div className="loader-inner"><span className="loader-dot" /> Собираем твой прогресс</div></div>
+    <div className="app-loader"><div className="loader-inner"><span className="loader-dot" /> {t('common.loading')}</div></div>
   )
 
   const stats = [
-    { icon: 'bolt', label: 'Опыт', value: user?.xp ?? 0, suffix: 'XP', tone: 'amber' },
-    { icon: 'flame', label: 'Серия занятий', value: user?.streak ?? 0, suffix: 'дн.', tone: 'coral' },
-    { icon: 'check', label: 'Пройдено', value: completed, suffix: 'уроков', tone: 'mint' },
-    { icon: 'layers', label: 'В траектории', value: total, suffix: 'уроков', tone: 'violet' },
+    { icon: 'bolt', label: t('dashboard.xpEarned'), value: user?.xp ?? 0, suffix: 'XP', tone: 'amber' },
+    { icon: 'flame', label: t('dashboard.currentStreak'), value: user?.streak ?? 0, suffix: t('time.days'), tone: 'coral' },
+    { icon: 'check', label: t('dashboard.lessonsCompleted'), value: completed, suffix: t('courses.lessons').toLowerCase(), tone: 'mint' },
+    { icon: 'layers', label: t('dashboard.myProgress'), value: total, suffix: t('courses.lessons').toLowerCase(), tone: 'violet' },
   ]
 
   return (
@@ -56,31 +61,31 @@ export default function StudentDashboard() {
         <header className="page-heading">
           <div>
             <div className="page-kicker"><span /> {formatDate()}</div>
-            <h1>Привет, {user?.username}</h1>
-            <p>Небольшой шаг сегодня заметно меняет результат завтра.</p>
+            <h1>{t('dashboard.welcome')}, {user?.username}</h1>
+            <p>{t('dashboard.continueWhere')}</p>
           </div>
           <button className="button button-ghost" onClick={() => navigate('/student/notifications')}>
             <Icon name="bell" size={18} />
-            <span>Уведомления</span>
+            <span>{t('sidebar.notifications')}</span>
             {notifCount > 0 && <b>{notifCount}</b>}
           </button>
         </header>
 
         <section className="learning-hero">
           <div className="learning-hero-copy">
-            <div className="hero-label"><Icon name="sparkles" size={15} /> Твоя траектория</div>
-            <h2>{total ? 'Продолжай — ритм уже набран.' : 'Первая строка кода начинается здесь.'}</h2>
+            <div className="hero-label"><Icon name="sparkles" size={15} /> {t('dashboard.myProgress')}</div>
+            <h2>{total ? t('dashboard.continueWhere') : t('courses.start')}</h2>
             <p>
               {total
-                ? `Завершено ${completed} из ${total} уроков. Следующая цель уже на расстоянии одного занятия.`
-                : 'Выбери первый курс, открой урок и начни собирать свою серию занятий.'}
+                ? `${t('lessons.completed')} ${completed} / ${total}. ${t('dashboard.continueWhere')}`
+                : t('courses.selectCourse')}
             </p>
             <div className="hero-actions">
               <button className="button button-primary" onClick={continueLearning}>
-                <Icon name="play" size={18} /> {nextLesson ? 'Продолжить урок' : 'Выбрать курс'}
+                <Icon name="play" size={18} /> {nextLesson ? t('common.continue') : t('courses.selectCourse')}
               </button>
               <button className="button button-secondary" onClick={() => navigate('/student/courses')}>
-                Все курсы <Icon name="arrow" size={16} />
+                {t('courses.allCourses')} <Icon name="arrow" size={16} />
               </button>
             </div>
           </div>
@@ -88,7 +93,7 @@ export default function StudentDashboard() {
           <div className="progress-orbit" style={{ '--progress': `${percent * 3.6}deg` }}>
             <div className="progress-orbit-inner">
               <strong>{percent}%</strong>
-              <span>пройдено</span>
+              <span>{t('courses.completed').toLowerCase()}</span>
             </div>
             <i className="orbit-dot" />
           </div>
@@ -110,18 +115,18 @@ export default function StudentDashboard() {
           <article className="content-panel lessons-panel">
             <div className="panel-heading">
               <div>
-                <span className="panel-kicker">Продолжить обучение</span>
-                <h2>Последние уроки</h2>
+                <span className="panel-kicker">{t('common.continue')}</span>
+                <h2>{t('dashboard.recentLessons')}</h2>
               </div>
-              <button className="text-button" onClick={() => navigate('/student/courses')}>Смотреть все <Icon name="arrow" size={15} /></button>
+              <button className="text-button" onClick={() => navigate('/student/courses')}>{t('courses.allCourses')} <Icon name="arrow" size={15} /></button>
             </div>
 
             {progress.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-icon"><Icon name="book" size={24} /></div>
-                <h3>Здесь появится твоя история</h3>
-                <p>Начни любой курс — уроки и прогресс будут собраны на этой странице.</p>
-                <button className="button button-secondary" onClick={() => navigate('/student/courses')}>Открыть каталог</button>
+                <h3>{t('dashboard.welcome')}</h3>
+                <p>{t('courses.selectCourse')}</p>
+                <button className="button button-secondary" onClick={() => navigate('/student/courses')}>{t('courses.allCourses')}</button>
               </div>
             ) : (
               <div className="lesson-feed">
@@ -132,7 +137,7 @@ export default function StudentDashboard() {
                     </span>
                     <span className="lesson-info">
                       <strong>{item.lesson_title}</strong>
-                      <small>{item.completed ? 'Материал освоен' : 'Можно продолжить с этого места'}</small>
+                      <small>{item.completed ? t('lessons.completed') : t('common.continue')}</small>
                     </span>
                     <span className="lesson-action"><Icon name="arrow" size={17} /></span>
                   </button>
@@ -143,15 +148,15 @@ export default function StudentDashboard() {
 
           <article className="content-panel certificate-panel">
             <div className="certificate-visual"><Icon name="graduation" size={30} /></div>
-            <span className="panel-kicker">Большая цель</span>
-            <h2>Сертификат PythonOku</h2>
-            <p>{certificatePercent >= 100 ? 'Цель достигнута. Отличная работа!' : `Осталось набрать ${Math.max(500 - (user?.xp ?? 0), 0)} XP.`}</p>
-            <div className="goal-number"><strong>{certificatePercent}%</strong><span>до сертификата</span></div>
+            <span className="panel-kicker">{t('profile.certificates')}</span>
+            <h2>{t('profile.certificates')} PythonOku</h2>
+            <p>{certificatePercent >= 100 ? t('profile.certificateReady') : t('profile.xpLeft', { xp: Math.max(500 - (user?.xp ?? 0), 0) })}</p>
+            <div className="goal-number"><strong>{certificatePercent}%</strong><span>{t('profile.certificates').toLowerCase()}</span></div>
             <div className="goal-track"><span style={{ width: `${certificatePercent}%` }} /></div>
             {certificatePercent >= 100 ? (
-              <button className="button button-primary full-width"><Icon name="download" size={17} /> Скачать сертификат</button>
+              <button className="button button-primary full-width"><Icon name="download" size={17} /> {t('common.download')}</button>
             ) : (
-              <button className="button button-secondary full-width" onClick={continueLearning}>Продолжить путь <Icon name="arrow" size={16} /></button>
+              <button className="button button-secondary full-width" onClick={continueLearning}>{t('common.continue')} <Icon name="arrow" size={16} /></button>
             )}
           </article>
         </section>

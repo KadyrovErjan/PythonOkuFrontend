@@ -2232,3 +2232,59 @@ main input, main textarea, main select { color-scheme: light; }
 @media (max-width: 860px) {
   .app-sidebar { background: rgba(255,255,255,.98); }
 }
+
+/* Language Switcher */
+.language-switcher {
+  display: flex;
+  gap: .35rem;
+  padding: .3rem;
+  border: 1px solid rgba(164,174,194,.12);
+  border-radius: .75rem;
+  background: rgba(15,21,35,.7);
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .45rem .65rem;
+  border: 1px solid transparent;
+  border-radius: .6rem;
+  color: #8d99ac;
+  background: transparent;
+  font: inherit;
+  font-size: .68rem;
+  font-weight: 680;
+  transition: all 180ms ease;
+  cursor: pointer;
+}
+
+.lang-btn:hover {
+  color: #c7d0df;
+  background: rgba(255,255,255,.04);
+}
+
+.lang-btn.active {
+  border-color: rgba(128,100,255,.35);
+  color: #eeeaff;
+  background: rgba(128,100,255,.13);
+}
+
+.lang-btn .flag {
+  font-size: .95rem;
+  line-height: 1;
+}
+
+.lang-btn .lang-name {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .lang-btn .lang-name {
+    display: none;
+  }
+  
+  .lang-btn {
+    padding: .45rem;
+  }
+}

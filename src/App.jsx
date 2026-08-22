@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import api from './api/axios'
 import LoadingSplash from './components/LoadingSplash'
 
@@ -48,9 +49,11 @@ function useCurrentRole() {
 }
 
 function RouteLoader() {
+  const { t } = useTranslation()
+  
   return (
     <div className="app-loader">
-      <div className="loader-inner"><span className="loader-dot" /> Проверяем доступ</div>
+      <div className="loader-inner"><span className="loader-dot" /> {t('auth.checkingAccess')}</div>
     </div>
   )
 }
